@@ -11,12 +11,6 @@ import android.os.Parcelable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Created by magicleon on 30/07/15.
- */
-/*
-    This class contains all the useful informations of a single movie;
-*/
 public class Movie implements Parcelable
 
 {
