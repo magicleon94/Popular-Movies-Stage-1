@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="posters_load_error_message">There was an error loading movies</string>
+
+    <string name="poster_default_size">w500</string>
+    <string name="Plot">Plot</string>
+
+
+    <string name="sorting_criteria">Sorting Criteria</string>
+    <string name="pref_sorting_popular">popular</string>
+    <string name="pref_sorting_popular_label">Popularity</string>
+
+    <string name="pref_sorting_rating">top_rated</string>
+    <string name="pref_sorting_rating_label">Top Rated</string>
+
+    <string name="movie_preferences">movie_preferences</string>
+
+    <string name="release_date">Release date: \n%s</string>
+    <string name="vote_average">Vote average: \n%.1f/10</string>
+    <string name="api_key">API KEY HERE</string>
+
+</resources>

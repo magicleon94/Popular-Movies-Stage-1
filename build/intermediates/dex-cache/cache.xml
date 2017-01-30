@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="68e5c1951e2f14ccf75f906b085aef0b5251a65d">
+        <dex dex="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_06b28dd49659137dfabaf3bf18af838122d08f45/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/exploded-aar/com.android.support/support-compat/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="ca3c7aa31e2726a400a6e552b93cb9f63c9a1e6d">
+        <dex dex="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-compat-25.1.0_1cef6735fb4346ece1d354aed8b59de5a4a0319a/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="d7b77540e7ceab03d0915ab8617d6c7a6091e471">
+        <dex dex="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_7de42cce94cdb3369e65e11e6ef43ccdda406026/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="e79aa3d9a16f8c9f16377c0608de70a8f31e5d80">
+        <dex dex="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-vector-drawable-25.1.0_788e0440f1fa7d65aeea081bcad7207e968c7dcc/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="b266c8faa5af72e579b9da36ef35053ffed6ac64">
+        <dex dex="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-recyclerview-v7-25.1.0_e7d19d433dfc03e911739daf8b35a5c462cb46bf/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.5.2/7446d06ec8d4f7ffcc53f1da37c95f200dcb9387/picasso-2.5.2.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="7446d06ec8d4f7ffcc53f1da37c95f200dcb9387">
+        <dex dex="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/transforms/dex/debug/folders/1000/10/picasso-2.5.2_cf7f324e62b58fa2d23fc15f72ad1320341a88b2/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="657ebcb41ff77d2d323caea1b23c4f64d890d7b4">
+        <dex dex="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_6a9f297949fe4e4eae30904badb3305956ecd959/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/exploded-aar/com.android.support/support-fragment/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="2a53c4f3518116b8c6aee0e477233f0f7da8616f">
+        <dex dex="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-fragment-25.1.0_a32a4c683de4406ad995d984745bf467cc0c49fd/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/support-media-compat/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="f02263e35e52668dd17b73bf961437e3d562b35f">
+        <dex dex="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-media-compat-25.1.0_506eee2b623858a5f2ffcf88a3531cb84df4776b/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/support-fragment/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="2a53c4f3518116b8c6aee0e477233f0f7da8616f">
+        <dex dex="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-fragment-25.1.0_ad69425a1155df0ced786312e33b0246b450967f/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/exploded-aar/com.android.support/support-media-compat/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="f02263e35e52668dd17b73bf961437e3d562b35f">
+        <dex dex="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-media-compat-25.1.0_42f14b376a15de913001a677eb12c58044014647/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="b266c8faa5af72e579b9da36ef35053ffed6ac64">
+        <dex dex="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-recyclerview-v7-25.1.0_cbfb3f2aa8dc0a09e7dc2b66a3f2606bc21cefe1/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="9a16b0a2e8b296dab6ca1c425b76e418dd09542e">
+        <dex dex="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_11652a41e8e909df19a049a1724147c259888c6c/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/exploded-aar/com.android.support/support-v4/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-v4-25.1.0_7df2bbc4858941a75e6153e3f5e173905deccb04/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/support-v4/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-v4-25.1.0_d1b0da68779775a462c97dd491fe6a4b2c99cea3/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/exploded-aar/com.android.support/support-core-ui/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="aee64634871d88a419d59eb743c1258a60f19700">
+        <dex dex="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-core-ui-25.1.0_a7afeb7880b49811d76ab081b8970127e41eefa1/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/support-core-utils/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="0a0ef86b7fa568a52bf6214a0326ca1f1d618da7">
+        <dex dex="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-core-utils-25.1.0_708771ab8888b25d5733d9fe3995f774a7688922/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/support-core-ui/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="aee64634871d88a419d59eb743c1258a60f19700">
+        <dex dex="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-core-ui-25.1.0_9790414282aabd4afff9fad050e0a9c89528f651/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/support-compat/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="ca3c7aa31e2726a400a6e552b93cb9f63c9a1e6d">
+        <dex dex="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-compat-25.1.0_3dadd044b4c48c15df9bef5e9b639251f0de1aac/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="6fb6ac3e8d3b9013819920d9ea11f3803c4c0033">
+        <dex dex="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-animated-vector-drawable-25.1.0_4bffb933afe4a667af0d5a1e389305b3d7a287ff/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="1630658fbc2d222b988603c27b4a4249586fbfe7">
+        <dex dex="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-appcompat-v7-25.1.0_78cf2663388216a2844cecc93721b1beb3910b2f/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/25.1.0/support-annotations-25.1.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="64cb6b229a8bdfd907bc8dd46839a0053e4c018d">
+        <dex dex="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/transforms/dex/debug/folders/1000/10/support-annotations-25.1.0_972056d13b1e6fdfcd5f1ce5813d583de56cfccb/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/exploded-aar/com.android.support/support-core-utils/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="0a0ef86b7fa568a52bf6214a0326ca1f1d618da7">
+        <dex dex="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-core-utils-25.1.0_2370d00610ce7edd1962495fca65a7c1757f6b26/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="1630658fbc2d222b988603c27b4a4249586fbfe7">
+        <dex dex="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-appcompat-v7-25.1.0_7527aa7714b2c8927cd65aec4dff73617bd72931/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="6fb6ac3e8d3b9013819920d9ea11f3803c4c0033">
+        <dex dex="/Users/magicleon/Desktop/Popular-Movies-Stage-1/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-animated-vector-drawable-25.1.0_56676c4ac7414064b54b682e1c2fc53454a34abe/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/25.1.0/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="e79aa3d9a16f8c9f16377c0608de70a8f31e5d80">
+        <dex dex="/Users/magicleon/Desktop/PopularMovies/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-vector-drawable-25.1.0_d11bb41ab0a3c629e20327122cc91b48200d95b9/classes.dex" />
+    </item>
+
+</items>
