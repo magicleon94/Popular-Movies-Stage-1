@@ -17,6 +17,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
+    }
+    buildTypes.each {
+        it.buildConfigField "String" , "MY_API_KEY", myApiKey
     }
 }
 repositories {
@@ -38,4 +42,5 @@ dependencies {
     compile 'com.android.support:support-vector-drawable:25.1.0'
     testCompile 'junit:junit:4.12'
 }
+
 

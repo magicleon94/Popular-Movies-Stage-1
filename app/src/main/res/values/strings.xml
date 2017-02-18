@@ -17,6 +17,5 @@
 
     <string name="release_date">Release date: \n%s</string>
     <string name="vote_average">Vote average: \n%.1f/10</string>
-    <string name="api_key">API KEY HERE</string>
 
 </resources>

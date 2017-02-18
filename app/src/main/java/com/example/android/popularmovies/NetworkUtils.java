@@ -15,6 +15,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
+import static com.example.android.popularmovies.BuildConfig.MY_API_KEY;
+
 class NetworkUtils {
 
     private final String LOG_TAG = NetworkUtils.class.getSimpleName();
@@ -35,7 +37,7 @@ class NetworkUtils {
         Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
                 .appendPath(API_SORTING)
                 .appendQueryParameter(API_PARAM_PAGE, String.valueOf(page))
-                .appendQueryParameter(API_PARAM_KEY, applicationContext.getString(R.string.api_key))
+                .appendQueryParameter(API_PARAM_KEY, MY_API_KEY)
                 .appendQueryParameter(API_LANGUAGE,"en")
                 .appendQueryParameter(API_POSTER_LANGUAGE,"en")
                 .build();
