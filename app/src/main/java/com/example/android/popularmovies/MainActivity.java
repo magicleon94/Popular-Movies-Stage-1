@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,7 +30,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements PostersAdapter.onPosterClickHandler {
+public class MainActivity extends AppCompatActivity implements PostersAdapter.onPosterClickHandler,LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
     final String TAG = MainActivity.class.getSimpleName();
     RecyclerView mRecyclerView;
     TextView mErrorTextView;
@@ -41,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
     SharedPreferences mSharedPrefs;
     SharedPreferences.OnSharedPreferenceChangeListener mOnSharedPreferenceChangeListener;
 
+    private static final int LOADER_ID = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,10 +54,10 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
 
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_posters);
         mErrorTextView = (TextView) findViewById(R.id.tv_posters_error);
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            mGridLayoutManager = new GridLayoutManager(this,2, LinearLayoutManager.VERTICAL,false);
-        }else{
-            mGridLayoutManager = new GridLayoutManager(this,4, LinearLayoutManager.VERTICAL,false);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            mGridLayoutManager = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
+        } else {
+            mGridLayoutManager = new GridLayoutManager(this, 4, LinearLayoutManager.VERTICAL, false);
         }
 
         mRecyclerView.setLayoutManager(mGridLayoutManager);
@@ -84,11 +89,11 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
         mSortingDialog = initSortingDialog();
 
         initSharedPreferences();
-        if (savedInstanceState!=null){
-            Log.d(TAG,"Restoring adapter");
+        if (savedInstanceState != null) {
+            Log.d(TAG, "Restoring adapter");
             mPostersAdapter.restoreInstanceState(savedInstanceState);
             mRecyclerView.scrollToPosition(savedInstanceState.getInt("SCROLL_POSITION"));
-        }else{
+        } else {
             loadPosters();
         }
 
@@ -97,38 +102,40 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.d(TAG,"Saving instance state");
+        Log.d(TAG, "Saving instance state");
         mPostersAdapter.saveInstanceState(outState);
         int scrollPosition = mGridLayoutManager.findFirstVisibleItemPosition();
-        outState.putInt("SCROLL_POSITION",scrollPosition);
+        outState.putInt("SCROLL_POSITION", scrollPosition);
 
     }
 
-    private void showErrorMessage(){
+    private void showErrorMessage() {
         mRecyclerView.setVisibility(View.INVISIBLE);
         mErrorTextView.setVisibility(View.VISIBLE);
     }
 
-    private void showPosters(){
+    private void showPosters() {
         mRecyclerView.setVisibility(View.VISIBLE);
         mErrorTextView.setVisibility(View.INVISIBLE);
     }
 
-    private void loadPosters(){
-        if (mPagesLoaded<MAX_PAGES){
-            new MovieFetcher().execute(mPagesLoaded+1);
+    private void loadPosters() {
+        Log.d(TAG,"Loading posters");
+        if (mPagesLoaded < MAX_PAGES) {
+            Bundle args = new Bundle();
+            args.putInt("page",++mPagesLoaded);
+            getSupportLoaderManager().restartLoader(LOADER_ID,args,this);
         }
     }
 
     @Override
     public void onClick(Movie movie) {
-        Intent detailIntent = new Intent(this,DetailActivity.class);
-        detailIntent.putExtra(Movie.EXTRA_MOVIE,movie.toBundle());
+        Intent detailIntent = new Intent(this, DetailActivity.class);
+        detailIntent.putExtra(Movie.EXTRA_MOVIE, movie.toBundle());
         startActivity(detailIntent);
-//        Toast.makeText(this,movie.title,Toast.LENGTH_SHORT).show();
     }
 
-    private AlertDialog initSortingDialog(){
+    private AlertDialog initSortingDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Sorting criteria");
@@ -136,27 +143,26 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String[] criteria = getResources().getStringArray(R.array.pref_sorting_values);
-//                Log.d(TAG,criteria[which]);
                 SharedPreferences.Editor editor = mSharedPrefs.edit();
-                editor.putString("sorting",criteria[which]);
+                editor.putString("sorting", criteria[which]);
                 editor.apply();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Log.d("AAA","Canceled");
+                Log.d("AAA", "Canceled");
             }
         });
         return builder.create();
     }
 
-    private void initSharedPreferences(){
-        mSharedPrefs = getApplicationContext().getSharedPreferences("movie_preferences",MODE_PRIVATE);
+    private void initSharedPreferences() {
+        mSharedPrefs = getApplicationContext().getSharedPreferences("movie_preferences", MODE_PRIVATE);
         mOnSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                Log.d(TAG,"Shared preferences for " + key + "changed. Pref: " + sharedPreferences.getString(key,null));
+                Log.d(TAG, "Shared preferences for " + key + "changed. Pref: " + sharedPreferences.getString(key, null));
                 mPagesLoaded = 0;
                 mPostersAdapter.clear();
                 loadPosters();
@@ -181,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
         int id = item.getItemId();
 
         if (id == R.id.action_sorting_criteria) {
-            if (mSortingDialog!=null){
+            if (mSortingDialog != null) {
                 mSortingDialog.show();
             }
         }
@@ -189,60 +195,74 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
         return super.onOptionsItemSelected(item);
     }
 
-    private class MovieFetcher extends AsyncTask<Integer,Void,ArrayList<Movie>> {
-        @Override
-        protected ArrayList<Movie> doInBackground(Integer... params) {
-            if (params.length==0){
+    @Override
+    public Loader<ArrayList<Movie>> onCreateLoader(int id, final Bundle args) {
+        return new AsyncTaskLoader<ArrayList<Movie>>(this) {
+            @Override
+            protected void onStartLoading() {
+                Log.d(TAG,"Start Loading");
+                super.onStartLoading();
+                if (mPagesLoaded == 0) {
+                    mProgressBar.setVisibility(View.VISIBLE);
+                }
+                mErrorTextView.setVisibility(View.INVISIBLE);
+                forceLoad();
+            }
+
+            @Override
+            public ArrayList<Movie> loadInBackground() {
+                Log.d(TAG,"Load in background");
+                if (args.size() == 0) {
+                    return null;
+                }
+                int page = args.getInt("page");
+                NetworkUtils networker = new NetworkUtils(getApplicationContext());
+                URL request = networker.buildUrl(page);
+                try {
+                    String JSONResponse = networker.getResponseFromHttpUrl(request);
+                    return fetchMoviesFromJson(JSONResponse);
+
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+
                 return null;
+
             }
-            int page = params[0];
-            NetworkUtils networker = new NetworkUtils(getApplicationContext());
-            URL request = networker.buildUrl(page);
-            try {
-                String JSONResponse = networker.getResponseFromHttpUrl(request);
-                return fetchMoviesFromJson(JSONResponse);
+        };
+    }
 
-            } catch (IOException | JSONException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            if (mPagesLoaded == 0){
-                mProgressBar.setVisibility(View.VISIBLE);
-            }
-            mErrorTextView.setVisibility(View.INVISIBLE);
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Movie> movies) {
-            mProgressBar.setVisibility(View.INVISIBLE);
-            if (movies!=null) {
-                mPostersAdapter.addMovies(movies);
-                mPagesLoaded++;
-                showPosters();
-            }else{
-                showErrorMessage();
-            }
-        }
-
-        private ArrayList<Movie> fetchMoviesFromJson(String jsonStr) throws JSONException {
-            final String KEY_MOVIES = "results";
-
-            JSONObject json = new JSONObject(jsonStr);
-            JSONArray movies = json.getJSONArray(KEY_MOVIES);
-            ArrayList<Movie> result = new ArrayList<>();
-
-            for (int i = 0; i < movies.length(); i++) {
-                Movie resMovie = Movie.getMovieFromJson(movies.getJSONObject(i));
-                result.add(resMovie);
-            }
-            return result;
+    @Override
+    public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> movies) {
+        Log.d(TAG,"Load finished");
+        mProgressBar.setVisibility(View.INVISIBLE);
+        if (movies != null) {
+            mPostersAdapter.addMovies(movies);
+            mPagesLoaded++;
+            showPosters();
+        } else {
+            showErrorMessage();
         }
     }
+
+
+    @Override
+    public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
+
+    }
+
+    private ArrayList<Movie> fetchMoviesFromJson(String jsonStr) throws JSONException {
+        final String KEY_MOVIES = "results";
+
+        JSONObject json = new JSONObject(jsonStr);
+        JSONArray movies = json.getJSONArray(KEY_MOVIES);
+        ArrayList<Movie> result = new ArrayList<>();
+
+        for (int i = 0; i < movies.length(); i++) {
+            Movie resMovie = Movie.getMovieFromJson(movies.getJSONObject(i));
+            result.add(resMovie);
+        }
+        return result;
+    }
+
 }

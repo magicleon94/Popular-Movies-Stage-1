@@ -11,6 +11,8 @@ import android.os.Parcelable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class Movie implements Parcelable
 
 {
@@ -30,6 +32,8 @@ public class Movie implements Parcelable
     public final double vote_average;
     public final long vote_count;
     public final String release_date;
+    public ArrayList<Trailer> trailers;
+    public ArrayList<Review> reviews;
 
     public Movie(long id, String title, String overview, String poster_path, double vote_average, long vote_count, String release_date)
     {
@@ -40,6 +44,21 @@ public class Movie implements Parcelable
         this.vote_average=vote_average;
         this.vote_count=vote_count;
         this.release_date=release_date;
+        this.trailers = new ArrayList<>();
+        this.reviews = new ArrayList<>();
+    }
+
+
+    public Movie(ArrayList<Review> reviews, ArrayList<Trailer> trailers, String release_date, long vote_count, double vote_average, String poster_path, String overview, String title, long id) {
+        this.reviews = reviews;
+        this.trailers = trailers;
+        this.release_date = release_date;
+        this.vote_count = vote_count;
+        this.vote_average = vote_average;
+        this.poster_path = poster_path;
+        this.overview = overview;
+        this.title = title;
+        this.id = id;
     }
 
     public Movie(Bundle bundle)
