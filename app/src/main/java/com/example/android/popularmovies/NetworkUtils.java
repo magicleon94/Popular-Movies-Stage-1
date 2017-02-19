@@ -26,7 +26,7 @@ class NetworkUtils {
     NetworkUtils(Context context){
         applicationContext = context;
     }
-    URL buildUrl(int page) {
+    URL buildMoviesUrl(int page) {
         String API_SORTING = applicationContext.getSharedPreferences(applicationContext.getString(R.string.movie_preferences), Context.MODE_PRIVATE).getString("sorting", "popular");
         String API_BASE_URL = "http://api.themoviedb.org/3/movie/";
         String API_PARAM_PAGE = "page";
@@ -40,6 +40,53 @@ class NetworkUtils {
                 .appendQueryParameter(API_PARAM_KEY, MY_API_KEY)
                 .appendQueryParameter(API_LANGUAGE,"en")
                 .appendQueryParameter(API_POSTER_LANGUAGE,"en")
+                .build();
+
+        Log.d(LOG_TAG, "Query URI: " + builtUri.toString());
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    URL buildTrailersUrl(long id){
+        String API_SORTING = applicationContext.getSharedPreferences(applicationContext.getString(R.string.movie_preferences), Context.MODE_PRIVATE).getString("sorting", "popular");
+        String API_BASE_URL = "http://api.themoviedb.org/3/movie/";
+        String API_PARAM_KEY = "api_key";
+        String API_TRAILERS_PATH = "videos";
+
+        Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
+                .appendPath(Long.toString(id))
+                .appendPath(API_TRAILERS_PATH)
+                .appendQueryParameter(API_PARAM_KEY, MY_API_KEY)
+                .build();
+
+        Log.d(LOG_TAG, "Query URI: " + builtUri.toString());
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+    URL buildReviewsUrl(long id){
+        String API_SORTING = applicationContext.getSharedPreferences(applicationContext.getString(R.string.movie_preferences), Context.MODE_PRIVATE).getString("sorting", "popular");
+        String API_BASE_URL = "http://api.themoviedb.org/3/movie/";
+        String API_PARAM_KEY = "api_key";
+        String API_REVIEWS_PATH = "reviews";
+
+        Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
+                .appendPath(Long.toString(id))
+                .appendPath(API_REVIEWS_PATH)
+                .appendQueryParameter(API_PARAM_KEY, MY_API_KEY)
                 .build();
 
         Log.d(LOG_TAG, "Query URI: " + builtUri.toString());

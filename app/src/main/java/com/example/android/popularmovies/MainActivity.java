@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.os.AsyncTask;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -198,15 +197,20 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
     @Override
     public Loader<ArrayList<Movie>> onCreateLoader(int id, final Bundle args) {
         return new AsyncTaskLoader<ArrayList<Movie>>(this) {
+            ArrayList<Movie> mData;
             @Override
             protected void onStartLoading() {
                 Log.d(TAG,"Start Loading");
                 super.onStartLoading();
-                if (mPagesLoaded == 0) {
-                    mProgressBar.setVisibility(View.VISIBLE);
+                if (mData!=null){
+                    deliverResult(mData);
+                }else{
+                    if (mPagesLoaded == 0) {
+                        mProgressBar.setVisibility(View.VISIBLE);
+                    }
+                    mErrorTextView.setVisibility(View.INVISIBLE);
+                    forceLoad();
                 }
-                mErrorTextView.setVisibility(View.INVISIBLE);
-                forceLoad();
             }
 
             @Override
@@ -217,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
                 }
                 int page = args.getInt("page");
                 NetworkUtils networker = new NetworkUtils(getApplicationContext());
-                URL request = networker.buildUrl(page);
+                URL request = networker.buildMoviesUrl(page);
                 try {
                     String JSONResponse = networker.getResponseFromHttpUrl(request);
                     return fetchMoviesFromJson(JSONResponse);
@@ -228,6 +232,12 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
 
                 return null;
 
+            }
+
+            @Override
+            public void deliverResult(ArrayList<Movie> data) {
+                mData = data;
+                super.deliverResult(data);
             }
         };
     }

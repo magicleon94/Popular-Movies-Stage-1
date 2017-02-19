@@ -17,5 +17,7 @@
 
     <string name="release_date">Release date: \n%s</string>
     <string name="vote_average">Vote average: \n%.1f/10</string>
+    <string name="trailers_label">Trailers</string>
+    <string name="reviews_button_label">See reviews</string>
 
 </resources>

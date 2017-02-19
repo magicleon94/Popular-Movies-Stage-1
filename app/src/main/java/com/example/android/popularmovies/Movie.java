@@ -2,11 +2,17 @@
  * Created by magicleon on 28/01/17.
  */
 package com.example.android.popularmovies;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.Toast;
 
+
+import com.example.android.popularmovies.database.MovieContract;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,6 +30,8 @@ public class Movie implements Parcelable
     public static final String KEY_VOTE_COUNT = "vote_count";
     public static final String KEY_VOTE_AVERAGE = "vote_average";
     public static final String KEY_RELEASE_DATE = "release_date";
+    public static final String KEY_TRAILERS = "trailers";
+    public static final String KEY_REVIEWS = "reviews";
 
     public final long id;
     public final String title;
@@ -59,6 +67,14 @@ public class Movie implements Parcelable
         this.overview = overview;
         this.title = title;
         this.id = id;
+    }
+
+    public void setTrailers(ArrayList<Trailer> trailers) {
+        this.trailers = trailers;
+    }
+
+    public void setReviews(ArrayList<Review> reviews) {
+        this.reviews = reviews;
     }
 
     public Movie(Bundle bundle)
@@ -105,7 +121,6 @@ public class Movie implements Parcelable
         bundle.putDouble(KEY_VOTE_AVERAGE, vote_average);
         bundle.putLong(KEY_VOTE_COUNT, vote_count);
         bundle.putString(KEY_RELEASE_DATE,release_date);
-
         return bundle;
     }
 
@@ -144,4 +159,51 @@ public class Movie implements Parcelable
         dest.writeLong(vote_count);
         dest.writeString(release_date);
     }
+
+
+    public void saveToBookmarks(Context context){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MovieContract.MovieEntry.MOVIE_ID, this.id);
+        contentValues.put(MovieContract.MovieEntry.MOVIE_TITLE, this.title);
+        contentValues.put(MovieContract.MovieEntry.MOVIE_OVERVIEW, this.overview);
+        contentValues.put(MovieContract.MovieEntry.MOVIE_POSTER_PATH, this.poster_path);
+        contentValues.put(MovieContract.MovieEntry.MOVIE_VOTES, this.vote_count);
+        contentValues.put(MovieContract.MovieEntry.MOVIE_AVG, this.vote_average);
+        contentValues.put(MovieContract.MovieEntry.MOVIE_RELEASE_DATE, this.release_date);
+        contentValues.put(MovieContract.MovieEntry.MOVIE_TRAILERS,Trailer.arrayToString(trailers));
+        contentValues.put(MovieContract.MovieEntry.MOVIE_REVIEWS,Review.arrayToString(reviews));
+
+        if (context.getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI,contentValues)!=null){
+//            Toast.makeText(context, R.string.bookmark_added,Toast.LENGTH_SHORT).show();
+        }else{
+//            Toast.makeText(context, R.string.bookmark_insert_error,Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public void removeFromBookmarks(Context context){
+        long deletedRows = context.getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
+                MovieContract.MovieEntry.MOVIE_ID + "=?",new String[]{Long.toString(this.id)});
+        if (deletedRows>0){
+//            Toast.makeText(context, R.string.bookmark_deleted,Toast.LENGTH_SHORT).show();
+        }else {
+//            Toast.makeText(context, R.string.bookmark_delete_error, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public boolean isBookmarked(Context context){
+        Cursor cursor = context.getContentResolver()
+                .query(MovieContract.MovieEntry.CONTENT_URI,
+                        new String[]{MovieContract.MovieEntry.MOVIE_ID},
+                        MovieContract.MovieEntry.MOVIE_ID + "=?",
+                        new String[]{Long.toString(this.id)},null);
+        if (cursor!=null) {
+            boolean bookmarked = cursor.getCount() > 0;
+            cursor.close();
+            return bookmarked;
+        }
+        return false;
+    }
+
+
 }
