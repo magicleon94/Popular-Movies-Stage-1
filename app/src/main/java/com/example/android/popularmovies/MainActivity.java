@@ -1,9 +1,11 @@
 package com.example.android.popularmovies;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -20,6 +22,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.example.android.popularmovies.database.MovieContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -221,16 +225,27 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
                 }
                 int page = args.getInt("page");
                 NetworkUtils networker = new NetworkUtils(getApplicationContext());
-                URL request = networker.buildMoviesUrl(page);
-                try {
-                    String JSONResponse = networker.getResponseFromHttpUrl(request);
-                    return fetchMoviesFromJson(JSONResponse);
+                String criterion = getSharedPreferences(getString(R.string.movie_preferences), Context.MODE_PRIVATE).getString("sorting", "popular");
+                if (!(criterion.equals(getString(R.string.pref_bookmarked)))) {
+                    URL request = networker.buildMoviesUrl(page, criterion);
+                    try {
+                        String JSONResponse = networker.getResponseFromHttpUrl(request);
+                        return fetchMoviesFromJson(JSONResponse);
 
-                } catch (IOException | JSONException e) {
-                    e.printStackTrace();
+                    } catch (IOException | JSONException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
                 }
-
-                return null;
+                else{
+                    Cursor cursor = getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,null,null,null,null);
+                    if (cursor!=null){
+                        ArrayList<Movie> res = fetchMoviesFromCursor(cursor);
+                        cursor.close();
+                        return res;
+                    }
+                    return null;
+                }
 
             }
 
@@ -275,4 +290,24 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
         return result;
     }
 
+    private ArrayList<Movie> fetchMoviesFromCursor(Cursor cursor){
+        ArrayList<Movie> result = new ArrayList<>();
+
+        if(cursor.moveToFirst()){
+            do{
+                result.add(new Movie(
+                        cursor.getLong(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_ID)),
+                        cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_TITLE)),
+                        cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_OVERVIEW)),
+                        cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_POSTER)),
+                        cursor.getDouble(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_AVG)),
+                        cursor.getLong(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_VOTES)),
+                        cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_RELEASE_DATE))
+                ));
+            }while(cursor.moveToNext());
+
+        }
+
+        return result;
+    }
 }

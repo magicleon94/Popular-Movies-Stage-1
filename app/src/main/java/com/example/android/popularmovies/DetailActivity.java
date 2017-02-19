@@ -1,15 +1,27 @@
 package com.example.android.popularmovies;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.android.popularmovies.database.MovieContract;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -29,6 +41,10 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     TextView mAverage;
     TextView mPlot;
     ImageView mPoster;
+    ListView mTrailersListView;
+    ImageButton mBookmarksButton;
+    Button mReviewsButton;
+
     ArrayList<Trailer> mTrailers;
     ArrayList<Review> mReviews;
 
@@ -44,6 +60,10 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         mAverage = (TextView) findViewById(R.id.tv_details_average);
         mPlot = (TextView) findViewById(R.id.tv_details_plot);
         mPoster = (ImageView) findViewById(R.id.detail_poster);
+        mTrailersListView = (ListView) findViewById(R.id.trailers_list_view);
+        mBookmarksButton = (ImageButton) findViewById(R.id.bookmark_button);
+        mReviewsButton = (Button) findViewById(R.id.reviews_button);
+
 
         Intent callerIntent = getIntent();
         if (callerIntent.hasExtra(Movie.EXTRA_MOVIE)){
@@ -52,40 +72,86 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             mReleaseDate.setText(String.format(getString(R.string.release_date), mMovie.release_date));
             mAverage.setText(String.format(getString(R.string.vote_average), mMovie.vote_average));
             mPlot.setText(mMovie.overview);
-            Picasso.with(this).load(mMovie.getPosterUri(getString(R.string.poster_default_size))).into(mPoster);
-            Log.d(TAG,"Preparing loader");
-            getSupportLoaderManager().restartLoader(LOADER_ID,null,this);
-            Log.d(TAG,"Started");
+            Bundle args = new Bundle();
+            if (mMovie.isBookmarked(this)){
+                mBookmarksButton.setImageResource(android.R.drawable.btn_star_big_on);
+                Picasso.with(this).load(mMovie.getPosterUri(getString(R.string.poster_default_size))).into(mPoster);
+                args.putBoolean("local",true);
+
+            }else {
+                mBookmarksButton.setImageResource(android.R.drawable.btn_star_big_off);
+                Picasso.with(this).load(mMovie.getPosterUri(getString(R.string.poster_default_size))).into(mPoster);
+                args.putBoolean("local",false);
+            }
+
+            getSupportLoaderManager().restartLoader(LOADER_ID, args, this);
+
+            mBookmarksButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Context context = getApplicationContext();
+//                    Toast.makeText(context,"Pressed",Toast.LENGTH_SHORT).show();
+                    if (!mMovie.isBookmarked(context)){
+                        if(mMovie.saveToBookmarks(context)){
+                            mBookmarksButton.setImageResource(android.R.drawable.btn_star_big_on);
+                        }
+                    }
+                    else{
+                        if(mMovie.removeFromBookmarks(context)){
+                            mBookmarksButton.setImageResource(android.R.drawable.btn_star_big_off);
+                        }
+                    }
+                }
+            });
         }
 
     }
 
     @Override
-    public Loader<Object> onCreateLoader(int id, final Bundle args) {
+    public Loader<Object> onCreateLoader(final int id, final Bundle args) {
 
         return new AsyncTaskLoader<Object>(this) {
             @Override
             protected void onStartLoading() {
-                Log.d(TAG,"Start load");
                 forceLoad();
             }
 
             @Override
             public Void loadInBackground() {
-                Log.d(TAG,"Load in background");
-                long id = mMovie.id;
-                NetworkUtils networker = new NetworkUtils(getApplicationContext());
-                URL requestTrailersUrl = networker.buildTrailersUrl(id);
-                URL requestReviewsUrl = networker.buildReviewsUrl(id);
-                try {
-                    String JSONResponseTrailers = networker.getResponseFromHttpUrl(requestTrailersUrl);
-                    mTrailers =  fetchTrailersFromJson(JSONResponseTrailers);
 
-                    String JSONResponseReviews = networker.getResponseFromHttpUrl(requestReviewsUrl);
-                    mReviews = fetchReviewsFromJson(JSONResponseReviews);
+                if (args != null && args.size() != 0) {
+                    boolean local = args.getBoolean("local");
+                    long id = mMovie.id;
+                    if (!local) {
+                        NetworkUtils networker = new NetworkUtils(getApplicationContext());
+                        URL requestTrailersUrl = networker.buildTrailersUrl(id);
+                        URL requestReviewsUrl = networker.buildReviewsUrl(id);
+                        try {
+                            String JSONResponseTrailers = networker.getResponseFromHttpUrl(requestTrailersUrl);
+                            mTrailers = fetchTrailersFromJson(JSONResponseTrailers);
 
-                } catch (IOException | JSONException e) {
-                    e.printStackTrace();
+                            String JSONResponseReviews = networker.getResponseFromHttpUrl(requestReviewsUrl);
+                            mReviews = fetchReviewsFromJson(JSONResponseReviews);
+
+                        } catch (IOException | JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else {
+                        Log.d(TAG, "Starting local query");
+                        Cursor cursor = getContentResolver()
+                                .query(MovieContract.MovieEntry.CONTENT_URI,
+                                        new String[]{MovieContract.MovieEntry.MOVIE_TRAILERS, MovieContract.MovieEntry.MOVIE_REVIEWS},
+                                        MovieContract.MovieEntry.MOVIE_ID + "=?",
+                                        new String[]{Long.toString(id)}, null);
+                        if (cursor != null && cursor.moveToFirst()) {
+                            Log.d(TAG, cursor.getString(0));
+                            mTrailers = Trailer.stringToArray(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_TRAILERS)));
+                            mReviews = Review.stringToArray(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_REVIEWS)));
+                            cursor.close();
+                        }
+
+                    }
                 }
 
                 return null;
@@ -95,9 +161,22 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public void onLoadFinished(Loader loader, Object data) {
-        //set the views
-        String forward = Trailer.arrayToString(mTrailers);
-        Log.d(TAG,Review.arrayToString(mReviews));
+        mMovie.setTrailers(mTrailers);
+        mMovie.setReviews(mReviews);
+        ArrayAdapter<String> trailersAdapter = new ArrayAdapter<String>(this,R.layout.trailer_list_item,Trailer.getTitles(mTrailers));
+        mTrailersListView.setAdapter(trailersAdapter);
+        setListViewHeightBasedOnChildren(mTrailersListView);
+
+        mTrailersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String url = Trailer.getUrls(mTrailers)[position];
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intent);
+            }
+        });
+
+
     }
 
     @Override
@@ -136,4 +215,24 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         return result;
     }
 
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+
+        ArrayAdapter listAdapter = (ArrayAdapter) listView.getAdapter();
+        if (listAdapter == null) {
+            return;
+        }
+
+        int elements = listAdapter.getCount();
+        if (elements>0) {
+            View listItem = listAdapter.getView(0, null, listView);
+            listItem.measure(0,0);
+
+            int totalHeight = listItem.getMeasuredHeight() * elements;
+
+            ViewGroup.LayoutParams params = listView.getLayoutParams();
+            params.height = totalHeight
+                    + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+            listView.setLayoutParams(params);
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.android.popularmovies;
 
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -43,5 +44,22 @@ public class Trailer{
         }
 
         return res;
+    }
+
+    public static String[] getTitles(ArrayList<Trailer> trailers){
+        String[] titles = new String[trailers.size()];
+        for (int i=0; i<trailers.size(); i++){
+            titles[i] = trailers.get(i).title;
+        }
+        return titles;
+    }
+
+    public static String[] getUrls(ArrayList<Trailer> trailers){
+        String[] titles = new String[trailers.size()];
+        for (int i=0; i<trailers.size(); i++){
+            titles[i] = trailers.get(i).url;
+        }
+
+        return titles;
     }
 }

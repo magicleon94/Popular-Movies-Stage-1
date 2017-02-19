@@ -26,20 +26,19 @@ class NetworkUtils {
     NetworkUtils(Context context){
         applicationContext = context;
     }
-    URL buildMoviesUrl(int page) {
-        String API_SORTING = applicationContext.getSharedPreferences(applicationContext.getString(R.string.movie_preferences), Context.MODE_PRIVATE).getString("sorting", "popular");
+    URL buildMoviesUrl(int page,String sorting) {
+        String API_SORTING = sorting;
         String API_BASE_URL = "http://api.themoviedb.org/3/movie/";
         String API_PARAM_PAGE = "page";
         String API_PARAM_KEY = "api_key";
         String API_LANGUAGE = "language";
         String API_POSTER_LANGUAGE = "include_image_language";
-
         Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
                 .appendPath(API_SORTING)
                 .appendQueryParameter(API_PARAM_PAGE, String.valueOf(page))
                 .appendQueryParameter(API_PARAM_KEY, MY_API_KEY)
-                .appendQueryParameter(API_LANGUAGE,"en")
-                .appendQueryParameter(API_POSTER_LANGUAGE,"en")
+                .appendQueryParameter(API_LANGUAGE, "en")
+                .appendQueryParameter(API_POSTER_LANGUAGE, "en")
                 .build();
 
         Log.d(LOG_TAG, "Query URI: " + builtUri.toString());
@@ -55,7 +54,6 @@ class NetworkUtils {
     }
 
     URL buildTrailersUrl(long id){
-        String API_SORTING = applicationContext.getSharedPreferences(applicationContext.getString(R.string.movie_preferences), Context.MODE_PRIVATE).getString("sorting", "popular");
         String API_BASE_URL = "http://api.themoviedb.org/3/movie/";
         String API_PARAM_KEY = "api_key";
         String API_TRAILERS_PATH = "videos";
@@ -78,7 +76,6 @@ class NetworkUtils {
         return url;
     }
     URL buildReviewsUrl(long id){
-        String API_SORTING = applicationContext.getSharedPreferences(applicationContext.getString(R.string.movie_preferences), Context.MODE_PRIVATE).getString("sorting", "popular");
         String API_BASE_URL = "http://api.themoviedb.org/3/movie/";
         String API_PARAM_KEY = "api_key";
         String API_REVIEWS_PATH = "reviews";

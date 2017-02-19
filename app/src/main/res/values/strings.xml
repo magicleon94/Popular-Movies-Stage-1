@@ -10,8 +10,13 @@
     <string name="pref_sorting_popular">popular</string>
     <string name="pref_sorting_popular_label">Popularity</string>
 
+
     <string name="pref_sorting_rating">top_rated</string>
     <string name="pref_sorting_rating_label">Top Rated</string>
+
+    <string name="pref_bookmarked">bookmarked</string>
+    <string name="pref_bookmarked_label">Bookmarked</string>
+
 
     <string name="movie_preferences">movie_preferences</string>
 
@@ -19,5 +24,9 @@
     <string name="vote_average">Vote average: \n%.1f/10</string>
     <string name="trailers_label">Trailers</string>
     <string name="reviews_button_label">See reviews</string>
+    <string name="bookmark_added">Movie added to bookmarks</string>
+    <string name="bookmark_insert_error">There was an error while saving the movie to bookmarks</string>
+    <string name="bookmark_deleted">Movie deleted from bookmarks</string>
+    <string name="bookmark_delete_error">There was an error while deleting the movie from bookmarks</string>
 
 </resources>

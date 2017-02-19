@@ -161,12 +161,12 @@ public class Movie implements Parcelable
     }
 
 
-    public void saveToBookmarks(Context context){
+    public boolean saveToBookmarks(Context context){
         ContentValues contentValues = new ContentValues();
         contentValues.put(MovieContract.MovieEntry.MOVIE_ID, this.id);
         contentValues.put(MovieContract.MovieEntry.MOVIE_TITLE, this.title);
         contentValues.put(MovieContract.MovieEntry.MOVIE_OVERVIEW, this.overview);
-        contentValues.put(MovieContract.MovieEntry.MOVIE_POSTER_PATH, this.poster_path);
+        contentValues.put(MovieContract.MovieEntry.MOVIE_POSTER, this.poster_path);
         contentValues.put(MovieContract.MovieEntry.MOVIE_VOTES, this.vote_count);
         contentValues.put(MovieContract.MovieEntry.MOVIE_AVG, this.vote_average);
         contentValues.put(MovieContract.MovieEntry.MOVIE_RELEASE_DATE, this.release_date);
@@ -174,20 +174,24 @@ public class Movie implements Parcelable
         contentValues.put(MovieContract.MovieEntry.MOVIE_REVIEWS,Review.arrayToString(reviews));
 
         if (context.getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI,contentValues)!=null){
-//            Toast.makeText(context, R.string.bookmark_added,Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.bookmark_added,Toast.LENGTH_SHORT).show();
+            return true;
         }else{
-//            Toast.makeText(context, R.string.bookmark_insert_error,Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.bookmark_insert_error,Toast.LENGTH_SHORT).show();
+            return false;
         }
 
     }
 
-    public void removeFromBookmarks(Context context){
+    public boolean removeFromBookmarks(Context context){
         long deletedRows = context.getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
                 MovieContract.MovieEntry.MOVIE_ID + "=?",new String[]{Long.toString(this.id)});
         if (deletedRows>0){
-//            Toast.makeText(context, R.string.bookmark_deleted,Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.bookmark_deleted,Toast.LENGTH_SHORT).show();
+            return true;
         }else {
-//            Toast.makeText(context, R.string.bookmark_delete_error, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.bookmark_delete_error, Toast.LENGTH_SHORT).show();
+            return false;
         }
     }
 
