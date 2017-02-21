@@ -5,6 +5,8 @@ package com.example.android.popularmovies;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -17,6 +19,8 @@ import com.example.android.popularmovies.database.MovieContract;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class Movie implements Parcelable
@@ -27,11 +31,12 @@ public class Movie implements Parcelable
     public static final String KEY_TITLE ="title";
     public static final String KEY_OVERVIEW = "overview";
     public static final String KEY_POSTER_PATH ="poster_path";
+    public static final String KEY_POSTER = "poster";
     public static final String KEY_VOTE_COUNT = "vote_count";
     public static final String KEY_VOTE_AVERAGE = "vote_average";
     public static final String KEY_RELEASE_DATE = "release_date";
-    public static final String KEY_TRAILERS = "trailers";
-    public static final String KEY_REVIEWS = "reviews";
+//    public static final String KEY_TRAILERS = "trailers";
+//    public static final String KEY_REVIEWS = "reviews";
 
     public final long id;
     public final String title;
@@ -42,6 +47,7 @@ public class Movie implements Parcelable
     public final String release_date;
     public ArrayList<Trailer> trailers;
     public ArrayList<Review> reviews;
+    public Bitmap poster;
 
     public Movie(long id, String title, String overview, String poster_path, double vote_average, long vote_count, String release_date)
     {
@@ -57,7 +63,11 @@ public class Movie implements Parcelable
     }
 
 
-    public Movie(ArrayList<Review> reviews, ArrayList<Trailer> trailers, String release_date, long vote_count, double vote_average, String poster_path, String overview, String title, long id) {
+    public Bitmap getPoster() {
+        return poster;
+    }
+
+    public Movie(ArrayList<Review> reviews, ArrayList<Trailer> trailers, String release_date, long vote_count, double vote_average,String poster_path, String overview, String title, long id, Bitmap poster) {
         this.reviews = reviews;
         this.trailers = trailers;
         this.release_date = release_date;
@@ -67,6 +77,17 @@ public class Movie implements Parcelable
         this.overview = overview;
         this.title = title;
         this.id = id;
+        this.poster = poster;
+    }
+
+    public void setPoster(Bitmap poster) {
+        this.poster = poster;
+    }
+    public void setPosterFromCursor(Cursor cursor){
+        byte[] bytes = cursor.getBlob(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_POSTER));
+        ByteArrayInputStream posterStream = new ByteArrayInputStream(bytes);
+        Bitmap fetchedPoster = BitmapFactory.decodeStream(posterStream);
+        this.poster = fetchedPoster;
     }
 
     public void setTrailers(ArrayList<Trailer> trailers) {
@@ -77,15 +98,17 @@ public class Movie implements Parcelable
         this.reviews = reviews;
     }
 
+
     public Movie(Bundle bundle)
     {
         this(bundle.getLong(KEY_ID),
-                bundle.getString(KEY_TITLE),
-                bundle.getString(KEY_OVERVIEW),
-                bundle.getString(KEY_POSTER_PATH),
-                bundle.getDouble(KEY_VOTE_AVERAGE),
-                bundle.getLong(KEY_VOTE_COUNT),
-                bundle.getString(KEY_RELEASE_DATE));
+                                bundle.getString(KEY_TITLE),
+                                bundle.getString(KEY_OVERVIEW),
+                                bundle.getString(KEY_POSTER_PATH),
+                                bundle.getDouble(KEY_VOTE_AVERAGE),
+                                bundle.getLong(KEY_VOTE_COUNT),
+                                bundle.getString(KEY_RELEASE_DATE));
+
     }
 
 
@@ -121,6 +144,7 @@ public class Movie implements Parcelable
         bundle.putDouble(KEY_VOTE_AVERAGE, vote_average);
         bundle.putLong(KEY_VOTE_COUNT, vote_count);
         bundle.putString(KEY_RELEASE_DATE,release_date);
+        bundle.putParcelable(KEY_POSTER,poster);
         return bundle;
     }
 
@@ -154,7 +178,7 @@ public class Movie implements Parcelable
         dest.writeLong(id);
         dest.writeString(title);
         dest.writeString(overview);
-        dest.writeString(poster_path);
+//        dest.writeString(poster_path);
         dest.writeDouble(vote_average);
         dest.writeLong(vote_count);
         dest.writeString(release_date);
@@ -166,12 +190,18 @@ public class Movie implements Parcelable
         contentValues.put(MovieContract.MovieEntry.MOVIE_ID, this.id);
         contentValues.put(MovieContract.MovieEntry.MOVIE_TITLE, this.title);
         contentValues.put(MovieContract.MovieEntry.MOVIE_OVERVIEW, this.overview);
-        contentValues.put(MovieContract.MovieEntry.MOVIE_POSTER, this.poster_path);
+        contentValues.put(MovieContract.MovieEntry.MOVIE_POSTER_PATH, this.poster_path);
         contentValues.put(MovieContract.MovieEntry.MOVIE_VOTES, this.vote_count);
         contentValues.put(MovieContract.MovieEntry.MOVIE_AVG, this.vote_average);
         contentValues.put(MovieContract.MovieEntry.MOVIE_RELEASE_DATE, this.release_date);
         contentValues.put(MovieContract.MovieEntry.MOVIE_TRAILERS,Trailer.arrayToString(trailers));
         contentValues.put(MovieContract.MovieEntry.MOVIE_REVIEWS,Review.arrayToString(reviews));
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        this.poster.compress(Bitmap.CompressFormat.JPEG,100,bos);
+        byte[] bytes = bos.toByteArray();
+
+        contentValues.put(MovieContract.MovieEntry.MOVIE_POSTER,bytes);
 
         if (context.getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI,contentValues)!=null){
             Toast.makeText(context, R.string.bookmark_added,Toast.LENGTH_SHORT).show();

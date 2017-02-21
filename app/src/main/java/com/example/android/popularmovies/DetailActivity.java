@@ -3,6 +3,8 @@ package com.example.android.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -23,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.android.popularmovies.database.MovieContract;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,7 +67,6 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         mBookmarksButton = (ImageButton) findViewById(R.id.bookmark_button);
         mReviewsButton = (Button) findViewById(R.id.reviews_button);
 
-
         Intent callerIntent = getIntent();
         if (callerIntent.hasExtra(Movie.EXTRA_MOVIE)){
             mMovie = new Movie(callerIntent.getBundleExtra(Movie.EXTRA_MOVIE));
@@ -75,12 +77,30 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             Bundle args = new Bundle();
             if (mMovie.isBookmarked(this)){
                 mBookmarksButton.setImageResource(android.R.drawable.btn_star_big_on);
-                Picasso.with(this).load(mMovie.getPosterUri(getString(R.string.poster_default_size))).into(mPoster);
+                Picasso.with(this).load(mMovie.getPosterUri(getString(R.string.poster_default_size)))
+                        .into(new Target(){
+                            Bitmap[] posterBitmap = new Bitmap[1];
+                            @Override
+                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                posterBitmap[0] = bitmap;
+                                mMovie.setPoster(posterBitmap[0]);
+                                mPoster.setImageBitmap(posterBitmap[0]);
+                            }
+
+                            @Override
+                            public void onBitmapFailed(Drawable errorDrawable) {
+
+                            }
+
+                            @Override
+                            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                            }
+                        });
                 args.putBoolean("local",true);
 
             }else {
                 mBookmarksButton.setImageResource(android.R.drawable.btn_star_big_off);
-                Picasso.with(this).load(mMovie.getPosterUri(getString(R.string.poster_default_size))).into(mPoster);
                 args.putBoolean("local",false);
             }
 
@@ -90,7 +110,6 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                 @Override
                 public void onClick(View v) {
                     Context context = getApplicationContext();
-//                    Toast.makeText(context,"Pressed",Toast.LENGTH_SHORT).show();
                     if (!mMovie.isBookmarked(context)){
                         if(mMovie.saveToBookmarks(context)){
                             mBookmarksButton.setImageResource(android.R.drawable.btn_star_big_on);
@@ -122,6 +141,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                 if (args != null && args.size() != 0) {
                     boolean local = args.getBoolean("local");
                     long id = mMovie.id;
+
                     if (!local) {
                         NetworkUtils networker = new NetworkUtils(getApplicationContext());
                         URL requestTrailersUrl = networker.buildTrailersUrl(id);
@@ -141,13 +161,15 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                         Log.d(TAG, "Starting local query");
                         Cursor cursor = getContentResolver()
                                 .query(MovieContract.MovieEntry.CONTENT_URI,
-                                        new String[]{MovieContract.MovieEntry.MOVIE_TRAILERS, MovieContract.MovieEntry.MOVIE_REVIEWS},
+                                        new String[]{MovieContract.MovieEntry.MOVIE_TRAILERS, MovieContract.MovieEntry.MOVIE_REVIEWS, MovieContract.MovieEntry.MOVIE_POSTER},
                                         MovieContract.MovieEntry.MOVIE_ID + "=?",
                                         new String[]{Long.toString(id)}, null);
                         if (cursor != null && cursor.moveToFirst()) {
                             Log.d(TAG, cursor.getString(0));
                             mTrailers = Trailer.stringToArray(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_TRAILERS)));
                             mReviews = Review.stringToArray(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_REVIEWS)));
+                            mMovie.setPosterFromCursor(cursor);
+                            mPoster.setImageBitmap(mMovie.getPoster());
                             cursor.close();
                         }
 

@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class MovieDbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "PopularMovies.db";
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 5;
 
     public MovieDbHelper(Context context){
         super(context,DATABASE_NAME,null,DB_VERSION);
@@ -24,6 +24,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                         MovieContract.MovieEntry.MOVIE_TITLE + " TEXT NOT NULL, " +
                         MovieContract.MovieEntry.MOVIE_OVERVIEW + " TEXT NOT NULL, " +
                         MovieContract.MovieEntry.MOVIE_POSTER + " BLOB NOT NULL, " +
+                        MovieContract.MovieEntry.MOVIE_POSTER_PATH + " TEXT NOT NULL, " +
                         MovieContract.MovieEntry.MOVIE_AVG + " REAL NOT NULL, " +
                         MovieContract.MovieEntry.MOVIE_VOTES + " INTEGER NOT NULL, " +
                         MovieContract.MovieEntry.MOVIE_RELEASE_DATE + " TEXT NOT NULL, " +

@@ -1,5 +1,7 @@
 package com.example.android.popularmovies;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 /**
@@ -9,6 +11,7 @@ import java.util.ArrayList;
 public class Review{
     String author;
     String content;
+    final String TAG = getClass().getSimpleName();
 
     public Review(String author, String content) {
         this.author = author;
@@ -35,7 +38,12 @@ public class Review{
 
         for (String element : elements) {
             String[] item = element.split(",");
-            res.add(new Review(item[0], item[1]));
+            try{
+                res.add(new Review(item[0], item[1]));
+            }catch (IndexOutOfBoundsException e){
+                Log.d("REVIEWS",e.toString());
+                continue;
+            }
         }
 
         return res;

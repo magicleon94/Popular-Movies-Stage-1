@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -29,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -252,6 +255,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
             @Override
             public void deliverResult(ArrayList<Movie> data) {
                 mData = data;
+                mProgressBar.setVisibility(View.INVISIBLE);
                 super.deliverResult(data);
             }
         };
@@ -295,15 +299,20 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
 
         if(cursor.moveToFirst()){
             do{
-                result.add(new Movie(
+                Movie movie = new Movie(
                         cursor.getLong(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_ID)),
                         cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_TITLE)),
                         cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_OVERVIEW)),
-                        cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_POSTER)),
+                        cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_POSTER_PATH)),
                         cursor.getDouble(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_AVG)),
                         cursor.getLong(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_VOTES)),
                         cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_RELEASE_DATE))
-                ));
+                );
+
+                movie.setPosterFromCursor(cursor);
+
+                result.add(movie);
+
             }while(cursor.moveToNext());
 
         }
