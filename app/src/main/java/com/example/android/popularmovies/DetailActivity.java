@@ -74,12 +74,16 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             mReleaseDate.setText(String.format(getString(R.string.release_date), mMovie.release_date));
             mAverage.setText(String.format(getString(R.string.vote_average), mMovie.vote_average));
             mPlot.setText(mMovie.overview);
+            final Bitmap[] posterBitmap = new Bitmap[1];
             Bundle args = new Bundle();
             if (mMovie.isBookmarked(this)){
                 mBookmarksButton.setImageResource(android.R.drawable.btn_star_big_on);
+                args.putBoolean("local",true);
+
+            }else {
+                mBookmarksButton.setImageResource(android.R.drawable.btn_star_big_off);
                 Picasso.with(this).load(mMovie.getPosterUri(getString(R.string.poster_default_size)))
                         .into(new Target(){
-                            Bitmap[] posterBitmap = new Bitmap[1];
                             @Override
                             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                                 posterBitmap[0] = bitmap;
@@ -97,10 +101,6 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
                             }
                         });
-                args.putBoolean("local",true);
-
-            }else {
-                mBookmarksButton.setImageResource(android.R.drawable.btn_star_big_off);
                 args.putBoolean("local",false);
             }
 

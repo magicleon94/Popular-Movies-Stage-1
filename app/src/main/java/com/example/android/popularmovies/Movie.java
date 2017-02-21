@@ -144,7 +144,7 @@ public class Movie implements Parcelable
         bundle.putDouble(KEY_VOTE_AVERAGE, vote_average);
         bundle.putLong(KEY_VOTE_COUNT, vote_count);
         bundle.putString(KEY_RELEASE_DATE,release_date);
-        bundle.putParcelable(KEY_POSTER,poster);
+//        bundle.putParcelable(KEY_POSTER,poster);
         return bundle;
     }
 
@@ -178,7 +178,7 @@ public class Movie implements Parcelable
         dest.writeLong(id);
         dest.writeString(title);
         dest.writeString(overview);
-//        dest.writeString(poster_path);
+        dest.writeString(poster_path);
         dest.writeDouble(vote_average);
         dest.writeLong(vote_count);
         dest.writeString(release_date);
