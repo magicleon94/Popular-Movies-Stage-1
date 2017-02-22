@@ -98,8 +98,10 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
         if (savedInstanceState != null) {
             Log.d(TAG, "Restoring adapter");
             mPostersAdapter.restoreInstanceState(savedInstanceState);
+            Log.d(TAG,mPostersAdapter.getItemCount() + " items recovered");
             mRecyclerView.scrollToPosition(savedInstanceState.getInt("SCROLL_POSITION"));
         } else {
+            Log.d(TAG,"Loading posters from onCreate");
             loadPosters();
         }
 
@@ -129,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
         Log.d(TAG,"Loading posters");
         if (mPagesLoaded < MAX_PAGES) {
             Bundle args = new Bundle();
-            args.putInt("page",++mPagesLoaded);
+            args.putInt("page",mPagesLoaded+1);
             getSupportLoaderManager().restartLoader(LOADER_ID,args,this);
         }
     }
@@ -233,7 +235,9 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
                     URL request = networker.buildMoviesUrl(page, criterion);
                     try {
                         String JSONResponse = networker.getResponseFromHttpUrl(request);
-                        return fetchMoviesFromJson(JSONResponse);
+                        ArrayList<Movie> res =  fetchMoviesFromJson(JSONResponse);
+                        mPagesLoaded++;
+                        return res;
 
                     } catch (IOException | JSONException e) {
                         e.printStackTrace();
@@ -241,6 +245,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
                     return null;
                 }
                 else{
+
                     Cursor cursor = getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,null,null,null,null);
                     if (cursor!=null){
                         ArrayList<Movie> res = fetchMoviesFromCursor(cursor);
@@ -267,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
         mProgressBar.setVisibility(View.INVISIBLE);
         if (movies != null) {
             mPostersAdapter.addMovies(movies);
-            mPagesLoaded++;
+            Log.d(TAG,mPostersAdapter.getItemCount() + " items loaded");
             showPosters();
         } else {
             showErrorMessage();
@@ -296,6 +301,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
 
     private ArrayList<Movie> fetchMoviesFromCursor(Cursor cursor){
         ArrayList<Movie> result = new ArrayList<>();
+        Log.d(TAG,"Found" + cursor.getCount() + " bookmarks");
 
         if(cursor.moveToFirst()){
             do{

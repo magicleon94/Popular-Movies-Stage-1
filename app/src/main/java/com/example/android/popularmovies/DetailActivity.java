@@ -15,13 +15,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.popularmovies.database.MovieContract;
 import com.squareup.picasso.Picasso;
@@ -34,7 +32,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks {
     private final String TAG = this.getClass().getSimpleName();
@@ -51,6 +48,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     ArrayList<Trailer> mTrailers;
     ArrayList<Review> mReviews;
 
+    TrailersAdapter trailersAdapter;
+
     private static final int LOADER_ID = 818;
 
     @Override
@@ -63,9 +62,11 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         mAverage = (TextView) findViewById(R.id.tv_details_average);
         mPlot = (TextView) findViewById(R.id.tv_details_plot);
         mPoster = (ImageView) findViewById(R.id.detail_poster);
-        mTrailersListView = (ListView) findViewById(R.id.trailers_list_view);
         mBookmarksButton = (ImageButton) findViewById(R.id.bookmark_button);
         mReviewsButton = (Button) findViewById(R.id.reviews_button);
+        trailersAdapter = new TrailersAdapter(this);
+        mTrailersListView = (ListView) findViewById(R.id.trailers_list_view);
+        mTrailersListView.setAdapter(trailersAdapter);
 
         Intent callerIntent = getIntent();
         if (callerIntent.hasExtra(Movie.EXTRA_MOVIE)){
@@ -95,7 +96,6 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                             public void onBitmapFailed(Drawable errorDrawable) {
 
                             }
-
                             @Override
                             public void onPrepareLoad(Drawable placeHolderDrawable) {
 
@@ -169,7 +169,6 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                             mTrailers = Trailer.stringToArray(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_TRAILERS)));
                             mReviews = Review.stringToArray(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_REVIEWS)));
                             mMovie.setPosterFromCursor(cursor);
-                            mPoster.setImageBitmap(mMovie.getPoster());
                             cursor.close();
                         }
 
@@ -185,16 +184,30 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     public void onLoadFinished(Loader loader, Object data) {
         mMovie.setTrailers(mTrailers);
         mMovie.setReviews(mReviews);
-        ArrayAdapter<String> trailersAdapter = new ArrayAdapter<String>(this,R.layout.trailer_list_item,Trailer.getTitles(mTrailers));
-        mTrailersListView.setAdapter(trailersAdapter);
+
+        mPoster.setImageBitmap(mMovie.getPoster());
+        trailersAdapter.setTrailers(mTrailers);
         setListViewHeightBasedOnChildren(mTrailersListView);
 
         mTrailersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String url = Trailer.getUrls(mTrailers)[position];
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(intent);
+                Uri uri = trailersAdapter.getTrailerUri(position);
+
+                if (uri != null) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                }
+            }
+        });
+
+        mReviewsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String reviewsString = Review.arrayToString(mReviews);
+                Intent reviewsIntent = new Intent(getApplicationContext(),ReviewsActivity.class);
+                reviewsIntent.putExtra("reviews",reviewsString);
+                startActivity(reviewsIntent);
             }
         });
 
@@ -239,7 +252,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     public static void setListViewHeightBasedOnChildren(ListView listView) {
 
-        ArrayAdapter listAdapter = (ArrayAdapter) listView.getAdapter();
+        TrailersAdapter listAdapter = (TrailersAdapter) listView.getAdapter();
         if (listAdapter == null) {
             return;
         }
