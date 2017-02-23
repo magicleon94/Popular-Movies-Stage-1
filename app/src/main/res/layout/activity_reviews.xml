@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_details_title"
+        android:gravity="center_horizontal"
+        android:text="@string/reviews_title"
+        android:textColor="@android:color/white"
+        android:textSize="28sp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:background="@color/colorPrimary"/>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/reviews_listView"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/no_reviews_message"
+        android:visibility="invisible"
+        android:textStyle="italic"
+        android:textSize="25dp"
+        android:gravity="center"
+        android:id="@+id/tv_reviews_error"/>
+
+</LinearLayout>

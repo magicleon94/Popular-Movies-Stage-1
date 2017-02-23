@@ -103,6 +103,19 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                         });
                 args.putBoolean("local",false);
             }
+            mPoster.setImageBitmap(mMovie.getPoster());
+
+            mTrailersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Uri uri = trailersAdapter.getTrailerUri(position);
+
+                    if (uri != null) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(intent);
+                    }
+                }
+            });
 
             getSupportLoaderManager().restartLoader(LOADER_ID, args, this);
 
@@ -120,6 +133,18 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                             mBookmarksButton.setImageResource(android.R.drawable.btn_star_big_off);
                         }
                     }
+                }
+            });
+
+            mReviewsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String reviewsString = Review.arrayToString(mReviews);
+                    Log.d(TAG,"Passing: " + reviewsString);
+
+                    Intent reviewsIntent = new Intent(getApplicationContext(),ReviewsActivity.class);
+                    reviewsIntent.putExtra(getString(R.string.reviews_intent_extra),reviewsString);
+                    startActivity(reviewsIntent);
                 }
             });
         }
@@ -185,32 +210,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         mMovie.setTrailers(mTrailers);
         mMovie.setReviews(mReviews);
 
-        mPoster.setImageBitmap(mMovie.getPoster());
         trailersAdapter.setTrailers(mTrailers);
         setListViewHeightBasedOnChildren(mTrailersListView);
-
-        mTrailersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Uri uri = trailersAdapter.getTrailerUri(position);
-
-                if (uri != null) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    startActivity(intent);
-                }
-            }
-        });
-
-        mReviewsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String reviewsString = Review.arrayToString(mReviews);
-                Intent reviewsIntent = new Intent(getApplicationContext(),ReviewsActivity.class);
-                reviewsIntent.putExtra("reviews",reviewsString);
-                startActivity(reviewsIntent);
-            }
-        });
-
 
     }
 

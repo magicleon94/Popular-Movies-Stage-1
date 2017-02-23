@@ -1,5 +1,6 @@
 package com.example.android.popularmovies;
 
+import android.content.Intent;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class Review{
         String res = "";
         try {
             for (int i = 0; i < reviews.size(); i++) {
-                res += reviews.get(i).author + "," + reviews.get(i).content;
+                res += reviews.get(i).author + ",lullo," + reviews.get(i).content;
                 if (i < reviews.size() - 1) {
                     res += " -lullo- ";
                 }
@@ -37,7 +38,7 @@ public class Review{
         ArrayList<Review> res = new ArrayList<>();
 
         for (String element : elements) {
-            String[] item = element.split(",");
+            String[] item = element.split(",lullo,");
             try{
                 res.add(new Review(item[0], item[1]));
             }catch (IndexOutOfBoundsException e){
@@ -45,7 +46,6 @@ public class Review{
                 continue;
             }
         }
-
         return res;
     }
 }

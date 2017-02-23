@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -31,7 +29,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -77,13 +74,15 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
             public void onScrolled(RecyclerView recyclerView,
                                    int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+                String criterion = getSharedPreferences(getString(R.string.movie_preferences), Context.MODE_PRIVATE).getString("sorting", "popular");
+                if (!criterion.equals(getString(R.string.pref_bookmarked))) {
+                    int visibleItemCount = recyclerView.getLayoutManager().getChildCount();
+                    int totalItemCount = recyclerView.getLayoutManager().getItemCount();
+                    int pastVisiblesItems = mGridLayoutManager.findFirstVisibleItemPosition();
 
-                int visibleItemCount = recyclerView.getLayoutManager().getChildCount();
-                int totalItemCount = recyclerView.getLayoutManager().getItemCount();
-                int pastVisiblesItems = mGridLayoutManager.findFirstVisibleItemPosition();
-
-                if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                    loadPosters();
+                    if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                        loadPosters();
+                    }
                 }
             }
         });
@@ -207,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
     public Loader<ArrayList<Movie>> onCreateLoader(int id, final Bundle args) {
         return new AsyncTaskLoader<ArrayList<Movie>>(this) {
             ArrayList<Movie> mData;
+
             @Override
             protected void onStartLoading() {
                 Log.d(TAG,"Start Loading");
@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
                 }
                 int page = args.getInt("page");
                 NetworkUtils networker = new NetworkUtils(getApplicationContext());
-                String criterion = getSharedPreferences(getString(R.string.movie_preferences), Context.MODE_PRIVATE).getString("sorting", "popular");
+                String criterion = getSharedPreferences(getString(R.string.movie_preferences), Context.MODE_PRIVATE).getString(getString(R.string.pref_sorting_key), "popular");
                 if (!(criterion.equals(getString(R.string.pref_bookmarked)))) {
                     URL request = networker.buildMoviesUrl(page, criterion);
                     try {
@@ -245,9 +245,10 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
                     return null;
                 }
                 else{
-
+                    Log.d(TAG,"Local Loading");
                     Cursor cursor = getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,null,null,null,null);
                     if (cursor!=null){
+                        Log.d(TAG,"Cursor is not null");
                         ArrayList<Movie> res = fetchMoviesFromCursor(cursor);
                         cursor.close();
                         return res;
@@ -282,6 +283,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
 
     @Override
     public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
+        Log.d(TAG,"Restarting loader");
 
     }
 

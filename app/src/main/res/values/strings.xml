@@ -28,5 +28,9 @@
     <string name="bookmark_insert_error">There was an error while saving the movie to bookmarks</string>
     <string name="bookmark_deleted">Movie deleted from bookmarks</string>
     <string name="bookmark_delete_error">There was an error while deleting the movie from bookmarks</string>
+    <string name="pref_sorting_key">sorting</string>
+    <string name="reviews_title">Reviews</string>
+    <string name="reviews_intent_extra">reviews</string>
+    <string name="no_reviews_message">Sorry, there are no reviews available for this movie</string>
 
 </resources>

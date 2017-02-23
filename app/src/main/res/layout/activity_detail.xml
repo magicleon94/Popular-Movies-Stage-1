@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.example.android.popularmovies.DetailActivity"
-    android:background="#e2e2e2">
+    android:background="#e2e2e2"
+    android:focusableInTouchMode="true">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
