@@ -1,6 +1,3 @@
-/**
- * Created by magicleon on 28/01/17.
- */
 package com.example.android.popularmovies;
 import android.content.ContentValues;
 import android.content.Context;
@@ -23,33 +20,30 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
-public class Movie implements Parcelable
+class Movie implements Parcelable
 
 {
-    public static final String EXTRA_MOVIE = "com.example.magicleon.movierowser.EXTRA_MOVIE";
-    public static final String KEY_ID = "id";
-    public static final String KEY_TITLE ="title";
-    public static final String KEY_OVERVIEW = "overview";
-    public static final String KEY_POSTER_PATH ="poster_path";
-    public static final String KEY_POSTER = "poster";
-    public static final String KEY_VOTE_COUNT = "vote_count";
-    public static final String KEY_VOTE_AVERAGE = "vote_average";
-    public static final String KEY_RELEASE_DATE = "release_date";
-//    public static final String KEY_TRAILERS = "trailers";
-//    public static final String KEY_REVIEWS = "reviews";
+    static final String EXTRA_MOVIE = "com.example.magicleon.movierowser.EXTRA_MOVIE";
+    private static final String KEY_ID = "id";
+    private static final String KEY_TITLE ="title";
+    private static final String KEY_OVERVIEW = "overview";
+    private static final String KEY_POSTER_PATH ="poster_path";
+    private static final String KEY_VOTE_COUNT = "vote_count";
+    private static final String KEY_VOTE_AVERAGE = "vote_average";
+    private static final String KEY_RELEASE_DATE = "release_date";
 
     public final long id;
     public final String title;
-    public final String overview;
-    public final String poster_path;
-    public final double vote_average;
-    public final long vote_count;
-    public final String release_date;
-    public ArrayList<Trailer> trailers;
-    public ArrayList<Review> reviews;
-    public Bitmap poster;
+    final String overview;
+    private final String poster_path;
+    final double vote_average;
+    private final long vote_count;
+    final String release_date;
+    private ArrayList<Trailer> trailers;
+    private ArrayList<Review> reviews;
+    private Bitmap poster;
 
-    public Movie(long id, String title, String overview, String poster_path, double vote_average, long vote_count, String release_date)
+    Movie(long id, String title, String overview, String poster_path, double vote_average, long vote_count, String release_date)
     {
         this.id=id;
         this.title=title;
@@ -63,43 +57,29 @@ public class Movie implements Parcelable
     }
 
 
-    public Bitmap getPoster() {
+    Bitmap getPoster() {
         return poster;
     }
 
-    public Movie(ArrayList<Review> reviews, ArrayList<Trailer> trailers, String release_date, long vote_count, double vote_average,String poster_path, String overview, String title, long id, Bitmap poster) {
-        this.reviews = reviews;
-        this.trailers = trailers;
-        this.release_date = release_date;
-        this.vote_count = vote_count;
-        this.vote_average = vote_average;
-        this.poster_path = poster_path;
-        this.overview = overview;
-        this.title = title;
-        this.id = id;
+    void setPoster(Bitmap poster) {
         this.poster = poster;
     }
-
-    public void setPoster(Bitmap poster) {
-        this.poster = poster;
-    }
-    public void setPosterFromCursor(Cursor cursor){
+    void setPosterFromCursor(Cursor cursor){
         byte[] bytes = cursor.getBlob(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_POSTER));
         ByteArrayInputStream posterStream = new ByteArrayInputStream(bytes);
-        Bitmap fetchedPoster = BitmapFactory.decodeStream(posterStream);
-        this.poster = fetchedPoster;
+        this.poster = BitmapFactory.decodeStream(posterStream);
     }
 
-    public void setTrailers(ArrayList<Trailer> trailers) {
+    void setTrailers(ArrayList<Trailer> trailers) {
         this.trailers = trailers;
     }
 
-    public void setReviews(ArrayList<Review> reviews) {
+    void setReviews(ArrayList<Review> reviews) {
         this.reviews = reviews;
     }
 
 
-    public Movie(Bundle bundle)
+    Movie(Bundle bundle)
     {
         this(bundle.getLong(KEY_ID),
                                 bundle.getString(KEY_TITLE),
@@ -112,7 +92,7 @@ public class Movie implements Parcelable
     }
 
 
-    protected Movie(Parcel in) {
+    private Movie(Parcel in) {
         id = in.readLong();
         title = in.readString();
         overview = in.readString();
@@ -134,7 +114,7 @@ public class Movie implements Parcelable
         }
     };
 
-    public Bundle toBundle()
+    Bundle toBundle()
     {
         Bundle bundle = new Bundle();
         bundle.putLong(KEY_ID, id);
@@ -144,11 +124,10 @@ public class Movie implements Parcelable
         bundle.putDouble(KEY_VOTE_AVERAGE, vote_average);
         bundle.putLong(KEY_VOTE_COUNT, vote_count);
         bundle.putString(KEY_RELEASE_DATE,release_date);
-//        bundle.putParcelable(KEY_POSTER,poster);
         return bundle;
     }
 
-    public static Movie getMovieFromJson(JSONObject jsonObject) throws JSONException
+    static Movie getMovieFromJson(JSONObject jsonObject) throws JSONException
     {
         return new Movie(jsonObject.getLong(KEY_ID),
                 jsonObject.getString(KEY_TITLE),
@@ -161,7 +140,7 @@ public class Movie implements Parcelable
 
     //returns the uri needed for Picasso.
 
-    public Uri getPosterUri(String size)
+    Uri getPosterUri(String size)
     {
         final String BASE_URL = "http://image.tmdb.org/t/p";
 
@@ -185,7 +164,7 @@ public class Movie implements Parcelable
     }
 
 
-    public boolean saveToBookmarks(Context context){
+    boolean saveToBookmarks(Context context){
         ContentValues contentValues = new ContentValues();
         contentValues.put(MovieContract.MovieEntry.MOVIE_ID, this.id);
         contentValues.put(MovieContract.MovieEntry.MOVIE_TITLE, this.title);
@@ -213,7 +192,7 @@ public class Movie implements Parcelable
 
     }
 
-    public boolean removeFromBookmarks(Context context){
+    boolean removeFromBookmarks(Context context){
         long deletedRows = context.getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
                 MovieContract.MovieEntry.MOVIE_ID + "=?",new String[]{Long.toString(this.id)});
         if (deletedRows>0){
@@ -225,7 +204,7 @@ public class Movie implements Parcelable
         }
     }
 
-    public boolean isBookmarked(Context context){
+    boolean isBookmarked(Context context){
         Cursor cursor = context.getContentResolver()
                 .query(MovieContract.MovieEntry.CONTENT_URI,
                         new String[]{MovieContract.MovieEntry.MOVIE_ID},

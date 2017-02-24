@@ -1,30 +1,23 @@
 package com.example.android.popularmovies;
 
-import android.util.Log;
-import android.widget.ArrayAdapter;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 
-/**
- * Created by magicleon on 18/02/17.
- */
-public class Trailer{
+class Trailer{
     String title;
     String url;
 
-    public Trailer(String title, String url) {
+    Trailer(String title, String url) {
         this.title = title;
         this.url = url;
     }
 
-    public static String arrayToString(ArrayList<Trailer> trailers){
+    static String arrayToString(ArrayList<Trailer> trailers){
         String res = "";
         try {
             for (int i = 0; i < trailers.size(); i++) {
                 res += trailers.get(i).title + "," + trailers.get(i).url;
                 if (i < trailers.size() - 1) {
-                    res += " -lullo- ";
+                    res += " -trailerSeparator- ";
                 }
             }
         }catch (NullPointerException e){
@@ -33,8 +26,8 @@ public class Trailer{
         return res;
     }
 
-    public static ArrayList<Trailer> stringToArray(String string){
-        String[] elements = string.split(" -lullo- ");
+    static ArrayList<Trailer> stringToArray(String string){
+        String[] elements = string.split(" -trailerSeparator- ");
 
         ArrayList<Trailer> res = new ArrayList<>();
 
@@ -46,20 +39,4 @@ public class Trailer{
         return res;
     }
 
-    public static String[] getTitles(ArrayList<Trailer> trailers){
-        String[] titles = new String[trailers.size()];
-        for (int i=0; i<trailers.size(); i++){
-            titles[i] = trailers.get(i).title;
-        }
-        return titles;
-    }
-
-    public static String[] getUrls(ArrayList<Trailer> trailers){
-        String[] titles = new String[trailers.size()];
-        for (int i=0; i<trailers.size(); i++){
-            titles[i] = trailers.get(i).url;
-        }
-
-        return titles;
-    }
 }

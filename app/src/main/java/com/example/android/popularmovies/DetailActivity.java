@@ -168,7 +168,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                     long id = mMovie.id;
 
                     if (!local) {
-                        NetworkUtils networker = new NetworkUtils(getApplicationContext());
+                        NetworkUtils networker = new NetworkUtils();
                         URL requestTrailersUrl = networker.buildTrailersUrl(id);
                         URL requestReviewsUrl = networker.buildReviewsUrl(id);
                         try {
@@ -209,8 +209,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     public void onLoadFinished(Loader loader, Object data) {
         mMovie.setTrailers(mTrailers);
         mMovie.setReviews(mReviews);
-
-        trailersAdapter.setTrailers(mTrailers);
+        mPoster.setImageBitmap(mMovie.getPoster());
+        if (mTrailers!=null) trailersAdapter.setTrailers(mTrailers);
         setListViewHeightBasedOnChildren(mTrailersListView);
 
     }

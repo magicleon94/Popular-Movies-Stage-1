@@ -14,10 +14,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-/**
- * Created by magicleon on 28/01/17.
- */
-
 class PostersAdapter extends RecyclerView.Adapter<PostersAdapter.PosterViewHolder> {
     private static final String TAG = PostersAdapter.class.getSimpleName();
     private ArrayList<Movie> mMovies;

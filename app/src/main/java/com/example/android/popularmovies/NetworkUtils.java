@@ -1,10 +1,5 @@
 package com.example.android.popularmovies;
 
-/**
- * Created by magicleon on 28/01/17.
- */
-
-import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
@@ -21,20 +16,15 @@ class NetworkUtils {
 
     private final String LOG_TAG = NetworkUtils.class.getSimpleName();
 
-    private Context applicationContext;
 
-    NetworkUtils(Context context){
-        applicationContext = context;
-    }
     URL buildMoviesUrl(int page,String sorting) {
-        String API_SORTING = sorting;
         String API_BASE_URL = "http://api.themoviedb.org/3/movie/";
         String API_PARAM_PAGE = "page";
         String API_PARAM_KEY = "api_key";
         String API_LANGUAGE = "language";
         String API_POSTER_LANGUAGE = "include_image_language";
         Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
-                .appendPath(API_SORTING)
+                .appendPath(sorting)
                 .appendQueryParameter(API_PARAM_PAGE, String.valueOf(page))
                 .appendQueryParameter(API_PARAM_KEY, MY_API_KEY)
                 .appendQueryParameter(API_LANGUAGE, "en")

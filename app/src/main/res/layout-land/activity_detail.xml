@@ -7,14 +7,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.example.android.popularmovies.DetailActivity"
-    android:background="#e2e2e2">
+    android:background="#e2e2e2"
+    android:focusableInTouchMode="true">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tv_details_title"
         android:gravity="center_horizontal"
+
         android:textColor="@android:color/white"
-        android:textSize="25sp"
+        android:textSize="28sp"
         android:paddingTop="15dp"
         android:paddingBottom="15dp"
         android:background="@color/colorPrimary"/>
@@ -39,22 +41,24 @@
                 android:layout_marginEnd="@dimen/activity_horizontal_margin">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scaleType="fitXY"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter"
                     app:srcCompat="@color/colorPrimary"
                     android:id="@+id/detail_poster"
-                    android:layout_weight="2"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
                     />
 
                 <LinearLayout
                     android:orientation="vertical"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:gravity="center">
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"/>
+                        android:layout_height="20dp"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -67,7 +71,7 @@
                         />
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="30dp"/>
+                        android:layout_height="20dp"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -77,6 +81,25 @@
                         android:textSize="20sp"
                         android:gravity="center"
                         android:layout_gravity="center"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"/>
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/reviews_button"
+                        android:text="@string/reviews_button_label"
+                        android:layout_gravity="center"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"/>
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/bookmark_button"
+                        android:background="@android:color/transparent"
+                        android:layout_gravity="center"
+                        android:src="@android:drawable/btn_star_big_off"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -89,6 +112,7 @@
                 android:textStyle="bold"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:gravity="center"
                 />
             <TextView
                 android:layout_width="match_parent"
@@ -98,6 +122,27 @@
                 android:textColor="#000000"
                 android:textSize="18sp"
                 android:textStyle="italic"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/trailers_label"
+                android:textSize="20sp"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/trailers_list_view"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
 

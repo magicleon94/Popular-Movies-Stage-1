@@ -10,19 +10,15 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-/**
- * Created by magicleon on 23/02/17.
- */
-
-public class ReviewsAdapter extends BaseAdapter {
-    ArrayList<Review> mReviews;
-    Context context;
-    public ReviewsAdapter(Context context){
+class ReviewsAdapter extends BaseAdapter {
+    private ArrayList<Review> mReviews;
+    private Context context;
+    ReviewsAdapter(Context context){
         this.context = context;
         mReviews = new ArrayList<>();
     }
 
-    public void setReviews(ArrayList<Review> data){
+    void setReviews(ArrayList<Review> data){
         mReviews.clear();
         mReviews.addAll(data);
         notifyDataSetChanged();
@@ -62,7 +58,8 @@ public class ReviewsAdapter extends BaseAdapter {
                 Log.e(context.getClass().getSimpleName(),e.toString());
             }
         }
-        ((TextView) reviewItem.findViewById(R.id.review_item_author)).setText("Author: " + review.author);
+        assert reviewItem != null;
+        ((TextView) reviewItem.findViewById(R.id.review_item_author)).setText(String.format(context.getString(R.string.review_author), review.author));
         ((TextView) reviewItem.findViewById(R.id.review_item_content)).setText(review.content);
         return  reviewItem;
     }

@@ -32,5 +32,7 @@
     <string name="reviews_title">Reviews</string>
     <string name="reviews_intent_extra">reviews</string>
     <string name="no_reviews_message">Sorry, there are no reviews available for this movie</string>
+    <string name="review_author">Author: %s</string>
+    <string name="no_bookmarks_found">There are no bookmarked movies.</string>
 
 </resources>

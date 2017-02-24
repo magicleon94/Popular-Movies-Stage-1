@@ -2,19 +2,14 @@ package com.example.android.popularmovies;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-
-/**
- * Created by magicleon on 22/02/17.
- */
 
 public class ReviewsActivity extends AppCompatActivity {
     ListView reviewsListView;
@@ -22,10 +17,15 @@ public class ReviewsActivity extends AppCompatActivity {
     TextView mErrorTextView;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reviews);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+
+        if (actionBar!=null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
         reviewsListView = (ListView) findViewById(R.id.reviews_listView);
         mErrorTextView = (TextView) findViewById(R.id.tv_reviews_error);
         mAdapter = new ReviewsAdapter(this);

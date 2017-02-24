@@ -13,25 +13,21 @@ import com.example.android.popularmovies.Trailer;
 
 import java.util.ArrayList;
 
-/**
- * Created by magicleon on 22/02/17.
- */
+class TrailersAdapter extends BaseAdapter {
+    private Context context;
+    private ArrayList<Trailer> mTrailers;
 
-public class TrailersAdapter extends BaseAdapter {
-    Context context;
-    ArrayList<Trailer> mTrailers;
-
-    public TrailersAdapter(Context context){
+    TrailersAdapter(Context context){
         this.context = context;
         this.mTrailers = new ArrayList<>();
     }
 
-    public void clear(){
+    private void clear(){
         mTrailers.clear();
         notifyDataSetChanged();
     }
 
-    public void setTrailers(ArrayList<Trailer> trailers){
+    void setTrailers(ArrayList<Trailer> trailers){
         clear();
         mTrailers.addAll(trailers);
         notifyDataSetChanged();
@@ -41,7 +37,7 @@ public class TrailersAdapter extends BaseAdapter {
         mTrailers.addAll(trailers);
         notifyDataSetChanged();
     }
-    public Uri getTrailerUri(int position){
+    Uri getTrailerUri(int position){
         Trailer trailer = getItem(position);
         if (trailer!=null){
             return Uri.parse(trailer.url);
@@ -83,6 +79,7 @@ public class TrailersAdapter extends BaseAdapter {
                 Log.e(context.getClass().getSimpleName(),e.toString());
             }
         }
+        assert trailerItem != null;
         ((TextView) trailerItem.findViewById(R.id.tv_trailer_item_title)).setText(trailer.title);
         return  trailerItem;
     }

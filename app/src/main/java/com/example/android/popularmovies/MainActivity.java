@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
     final String TAG = MainActivity.class.getSimpleName();
     RecyclerView mRecyclerView;
     TextView mErrorTextView;
+    TextView mNoBookmarksTextView;
     PostersAdapter mPostersAdapter;
     ProgressBar mProgressBar;
     int mPagesLoaded;
@@ -57,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
 
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_posters);
         mErrorTextView = (TextView) findViewById(R.id.tv_posters_error);
+        mNoBookmarksTextView = (TextView) findViewById(R.id.tv_posters_no_bookmarks);
+
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             mGridLayoutManager = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
         } else {
@@ -118,12 +121,19 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
 
     private void showErrorMessage() {
         mRecyclerView.setVisibility(View.INVISIBLE);
+        mNoBookmarksTextView.setVisibility(View.INVISIBLE);
         mErrorTextView.setVisibility(View.VISIBLE);
     }
-
+    private void showNoBookmarksMessage(){
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        mErrorTextView.setVisibility(View.INVISIBLE);
+        mNoBookmarksTextView.setVisibility(View.VISIBLE);
+    }
     private void showPosters() {
         mRecyclerView.setVisibility(View.VISIBLE);
         mErrorTextView.setVisibility(View.INVISIBLE);
+        mNoBookmarksTextView.setVisibility(View.INVISIBLE);
+
     }
 
     private void loadPosters() {
@@ -211,14 +221,22 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
             protected void onStartLoading() {
                 Log.d(TAG,"Start Loading");
                 super.onStartLoading();
-                if (mData!=null){
-                    deliverResult(mData);
-                }else{
-                    if (mPagesLoaded == 0) {
-                        mProgressBar.setVisibility(View.VISIBLE);
-                    }
-                    mErrorTextView.setVisibility(View.INVISIBLE);
+                String criterion = getSharedPreferences(getString(R.string.movie_preferences), Context.MODE_PRIVATE).getString(getString(R.string.pref_sorting_key), "popular");
+                if (criterion.equals(getString(R.string.pref_bookmarked))){
+                    //force refresh
+                    mPostersAdapter.clear();
                     forceLoad();
+                }
+                else {
+                    if (mData != null) {
+                        deliverResult(mData);
+                    } else {
+                        if (mPagesLoaded == 0) {
+                            mProgressBar.setVisibility(View.VISIBLE);
+                        }
+                        mErrorTextView.setVisibility(View.INVISIBLE);
+                        forceLoad();
+                    }
                 }
             }
 
@@ -229,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
                     return null;
                 }
                 int page = args.getInt("page");
-                NetworkUtils networker = new NetworkUtils(getApplicationContext());
+                NetworkUtils networker = new NetworkUtils();
                 String criterion = getSharedPreferences(getString(R.string.movie_preferences), Context.MODE_PRIVATE).getString(getString(R.string.pref_sorting_key), "popular");
                 if (!(criterion.equals(getString(R.string.pref_bookmarked)))) {
                     URL request = networker.buildMoviesUrl(page, criterion);
@@ -276,7 +294,12 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
             Log.d(TAG,mPostersAdapter.getItemCount() + " items loaded");
             showPosters();
         } else {
-            showErrorMessage();
+            String criterion = getSharedPreferences(getString(R.string.movie_preferences), Context.MODE_PRIVATE).getString(getString(R.string.pref_sorting_key), "popular");
+            if (criterion.equals(getString(R.string.pref_bookmarked))){
+                showNoBookmarksMessage();
+            }else {
+                showErrorMessage();
+            }
         }
     }
 
@@ -305,6 +328,9 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
         ArrayList<Movie> result = new ArrayList<>();
         Log.d(TAG,"Found" + cursor.getCount() + " bookmarks");
 
+        if (cursor.getCount()==0){
+            return null;
+        }
         if(cursor.moveToFirst()){
             do{
                 Movie movie = new Movie(

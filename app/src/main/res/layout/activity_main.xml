@@ -9,12 +9,20 @@
 
 
     <TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/tv_posters_error"
+    android:textSize="30sp"
+    android:visibility="invisible"
+    android:text="@string/posters_load_error_message"/>
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_posters_error"
+        android:id="@+id/tv_posters_no_bookmarks"
         android:textSize="30sp"
         android:visibility="invisible"
-        android:text="@string/posters_load_error_message"/>
+        android:text="@string/no_bookmarks_found"/>
 
 
     <ProgressBar
