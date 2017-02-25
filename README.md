@@ -1,7 +1,5 @@
-# Popular-Movies-Stage-1
-This repository contains the code of the submitted project Popular Movies (Stage 1) for the Associate Android Developer Fast Track program on Udacity.
+# Popular-Movies-Stage-2
+This repository contains the code of the submitted project Popular Movies (Stage 2) for the Associate Android Developer Fast Track program on Udacity.
 
-Note: the API key should be put in the strings.xml file at "api_key" string.
+Note: the API key is stored in the local gradle properties under the myApiKey name
 
-I've taken some code snippet (the Movie class) from my previous work (in the repo about Movie Browser), 
-made some years ago for practice after following Developing Android Apps on Udacity.
