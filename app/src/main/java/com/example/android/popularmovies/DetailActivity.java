@@ -55,7 +55,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        setContentView(R.layout.detail_constraint);
 
         mTitle = (TextView) findViewById(R.id.tv_details_title);
         mReleaseDate = (TextView) findViewById(R.id.tv_details_release_date);
@@ -210,8 +210,10 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         mMovie.setTrailers(mTrailers);
         mMovie.setReviews(mReviews);
         mPoster.setImageBitmap(mMovie.getPoster());
-        if (mTrailers!=null) trailersAdapter.setTrailers(mTrailers);
-        setListViewHeightBasedOnChildren(mTrailersListView);
+        if (mTrailers!=null){
+            trailersAdapter.setTrailers(mTrailers);
+            setListViewHeightBasedOnChildren(mTrailersListView);
+        }
 
     }
 
@@ -251,7 +253,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         return result;
     }
 
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
+    //TODO FIX THIS
+    public void setListViewHeightBasedOnChildren(ListView listView) {
 
         TrailersAdapter listAdapter = (TrailersAdapter) listView.getAdapter();
         if (listAdapter == null) {
@@ -259,15 +262,21 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         }
 
         int elements = listAdapter.getCount();
+        Log.d("AAA","Got " + elements + " elements");
+
         if (elements>0) {
             View listItem = listAdapter.getView(0, null, listView);
             listItem.measure(0,0);
-
-            int totalHeight = listItem.getMeasuredHeight() * elements;
+            //get the height of a single item, multiply by the number of items and get the total height for the items
+            int totalHeight = listItem.getMeasuredHeight() * elements*2;
 
             ViewGroup.LayoutParams params = listView.getLayoutParams();
+
+            //calculate the total height summing the height of the dividers too
             params.height = totalHeight
-                    + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+                    + (listView.getDividerHeight() * (listAdapter.getCount()-1));
+
+            //set the height
             listView.setLayoutParams(params);
         }
     }
