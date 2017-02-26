@@ -268,7 +268,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             View listItem = listAdapter.getView(0, null, listView);
             listItem.measure(0,0);
             //get the height of a single item, multiply by the number of items and get the total height for the items
-            int totalHeight = listItem.getMeasuredHeight() * elements*2;
+            int totalHeight = listItem.getMeasuredHeight() * (elements+2);
 
             ViewGroup.LayoutParams params = listView.getLayoutParams();
 

@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
     AlertDialog mSortingDialog;
     SharedPreferences mSharedPrefs;
     SharedPreferences.OnSharedPreferenceChangeListener mOnSharedPreferenceChangeListener;
+    String actualCriterion;
 
     private static final int LOADER_ID = 0;
 
@@ -77,8 +78,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
             public void onScrolled(RecyclerView recyclerView,
                                    int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                String criterion = getSharedPreferences(getString(R.string.movie_preferences), Context.MODE_PRIVATE).getString("sorting", "popular");
-                if (!criterion.equals(getString(R.string.pref_bookmarked))) {
+                if (!actualCriterion.equals(getString(R.string.pref_bookmarked))) {
                     int visibleItemCount = recyclerView.getLayoutManager().getChildCount();
                     int totalItemCount = recyclerView.getLayoutManager().getItemCount();
                     int pastVisiblesItems = mGridLayoutManager.findFirstVisibleItemPosition();
@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
         mSortingDialog = initSortingDialog();
 
         initSharedPreferences();
+        actualCriterion = mSharedPrefs.getString(getString(R.string.movie_preferences),getString(R.string.pref_sorting_popular));
         if (savedInstanceState != null) {
             Log.d(TAG, "Restoring adapter");
             mPostersAdapter.restoreInstanceState(savedInstanceState);
@@ -179,7 +180,9 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
         mOnSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                Log.d(TAG, "Shared preferences for " + key + "changed. Pref: " + sharedPreferences.getString(key, null));
+                actualCriterion = sharedPreferences.getString(key, getString(R.string.pref_sorting_popular));
+
+                Log.d(TAG, "Shared preferences for " + key + "changed. Pref: " + actualCriterion);
                 mPagesLoaded = 0;
                 mPostersAdapter.clear();
                 loadPosters();
@@ -221,8 +224,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
             protected void onStartLoading() {
                 Log.d(TAG,"Start Loading");
                 super.onStartLoading();
-                String criterion = getSharedPreferences(getString(R.string.movie_preferences), Context.MODE_PRIVATE).getString(getString(R.string.pref_sorting_key), "popular");
-                if (criterion.equals(getString(R.string.pref_bookmarked))){
+                if (actualCriterion.equals(getString(R.string.pref_bookmarked))){
                     //force refresh
                     mPostersAdapter.clear();
                     forceLoad();
@@ -248,9 +250,8 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
                 }
                 int page = args.getInt("page");
                 NetworkUtils networker = new NetworkUtils();
-                String criterion = getSharedPreferences(getString(R.string.movie_preferences), Context.MODE_PRIVATE).getString(getString(R.string.pref_sorting_key), "popular");
-                if (!(criterion.equals(getString(R.string.pref_bookmarked)))) {
-                    URL request = networker.buildMoviesUrl(page, criterion);
+                if (!(actualCriterion.equals(getString(R.string.pref_bookmarked)))) {
+                    URL request = networker.buildMoviesUrl(page, actualCriterion);
                     try {
                         String JSONResponse = networker.getResponseFromHttpUrl(request);
                         ArrayList<Movie> res =  fetchMoviesFromJson(JSONResponse);
@@ -294,8 +295,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
             Log.d(TAG,mPostersAdapter.getItemCount() + " items loaded");
             showPosters();
         } else {
-            String criterion = getSharedPreferences(getString(R.string.movie_preferences), Context.MODE_PRIVATE).getString(getString(R.string.pref_sorting_key), "popular");
-            if (criterion.equals(getString(R.string.pref_bookmarked))){
+            if (actualCriterion.equals(getString(R.string.pref_bookmarked))){
                 showNoBookmarksMessage();
             }else {
                 showErrorMessage();

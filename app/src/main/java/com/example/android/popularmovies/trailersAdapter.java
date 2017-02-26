@@ -73,14 +73,15 @@ class TrailersAdapter extends BaseAdapter {
             try{
                 LayoutInflater vi;
                 vi = LayoutInflater.from(context);
-                trailerItem = vi.inflate(R.layout.trailer_list_item,null);
+                trailerItem = vi.inflate(R.layout.trailer_list_item,parent,false);
 
             }catch (Exception e){
                 Log.e(context.getClass().getSimpleName(),e.toString());
             }
         }
-        assert trailerItem != null;
-        ((TextView) trailerItem.findViewById(R.id.tv_trailer_item_title)).setText(trailer.title);
+        if (trailerItem != null) {
+            ((TextView) trailerItem.findViewById(R.id.tv_trailer_item_title)).setText(trailer.title);
+        }
         return  trailerItem;
     }
 }
