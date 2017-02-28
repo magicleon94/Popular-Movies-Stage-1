@@ -1,17 +1,16 @@
 package com.example.android.popularmovies;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.popularmovies.database.MovieContract;
 
@@ -33,13 +33,29 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity implements PostersAdapter.onPosterClickHandler,LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
-    final String TAG = MainActivity.class.getSimpleName();
+    @BindView(R.id.rv_posters)
     RecyclerView mRecyclerView;
+    @BindView(R.id.tv_posters_error)
     TextView mErrorTextView;
+    @BindView(R.id.tv_posters_no_bookmarks)
     TextView mNoBookmarksTextView;
-    PostersAdapter mPostersAdapter;
+    @BindView(R.id.posters_progress_bar)
     ProgressBar mProgressBar;
+    @BindString(R.string.movie_preferences)
+    String MOVIE_PREFERENCES;
+    @BindString(R.string.pref_sorting_key)
+    String MOVIE_SORTING;
+    @BindString(R.string.pref_sorting_popular)
+    String MOVIE_SORTING_POPULAR;
+    @BindString(R.string.pref_bookmarked)
+    String MOVIE_BOOKMARKED;
+    PostersAdapter mPostersAdapter;
+    final String TAG = MainActivity.class.getSimpleName();
     int mPagesLoaded;
     final int MAX_PAGES = 20;
     GridLayoutManager mGridLayoutManager;
@@ -54,12 +70,8 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_posters);
-        mErrorTextView = (TextView) findViewById(R.id.tv_posters_error);
-        mNoBookmarksTextView = (TextView) findViewById(R.id.tv_posters_no_bookmarks);
+        ButterKnife.bind(this);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             mGridLayoutManager = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
@@ -78,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
             public void onScrolled(RecyclerView recyclerView,
                                    int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (!actualCriterion.equals(getString(R.string.pref_bookmarked))) {
+                if (!actualCriterion.equals(MOVIE_BOOKMARKED)) {
                     int visibleItemCount = recyclerView.getLayoutManager().getChildCount();
                     int totalItemCount = recyclerView.getLayoutManager().getItemCount();
                     int pastVisiblesItems = mGridLayoutManager.findFirstVisibleItemPosition();
@@ -90,14 +102,12 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
             }
         });
 
-        mProgressBar = (ProgressBar) findViewById(R.id.posters_progress_bar);
-
         mPagesLoaded = 0;
 
         mSortingDialog = initSortingDialog();
 
         initSharedPreferences();
-        actualCriterion = mSharedPrefs.getString(getString(R.string.movie_preferences),getString(R.string.pref_sorting_popular));
+        Toast.makeText(this, "OnCreate, prefs fetched: " + actualCriterion, Toast.LENGTH_SHORT).show();
         if (savedInstanceState != null) {
             Log.d(TAG, "Restoring adapter");
             mPostersAdapter.restoreInstanceState(savedInstanceState);
@@ -136,7 +146,6 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
         mNoBookmarksTextView.setVisibility(View.INVISIBLE);
 
     }
-
     private void loadPosters() {
         Log.d(TAG,"Loading posters");
         if (mPagesLoaded < MAX_PAGES) {
@@ -144,13 +153,6 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
             args.putInt("page",mPagesLoaded+1);
             getSupportLoaderManager().restartLoader(LOADER_ID,args,this);
         }
-    }
-
-    @Override
-    public void onClick(Movie movie) {
-        Intent detailIntent = new Intent(this, DetailActivity.class);
-        detailIntent.putExtra(Movie.EXTRA_MOVIE, movie.toBundle());
-        startActivity(detailIntent);
     }
 
     private AlertDialog initSortingDialog() {
@@ -162,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
             public void onClick(DialogInterface dialog, int which) {
                 String[] criteria = getResources().getStringArray(R.array.pref_sorting_values);
                 SharedPreferences.Editor editor = mSharedPrefs.edit();
-                editor.putString("sorting", criteria[which]);
+                editor.putString(MOVIE_SORTING, criteria[which]);
                 editor.apply();
             }
         });
@@ -174,14 +176,12 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
         });
         return builder.create();
     }
-
     private void initSharedPreferences() {
         mSharedPrefs = getApplicationContext().getSharedPreferences("movie_preferences", MODE_PRIVATE);
         mOnSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
                 actualCriterion = sharedPreferences.getString(key, getString(R.string.pref_sorting_popular));
-
                 Log.d(TAG, "Shared preferences for " + key + "changed. Pref: " + actualCriterion);
                 mPagesLoaded = 0;
                 mPostersAdapter.clear();
@@ -189,7 +189,16 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
             }
         };
         mSharedPrefs.registerOnSharedPreferenceChangeListener(mOnSharedPreferenceChangeListener);
+        Log.d(TAG, MOVIE_PREFERENCES);
+        actualCriterion = mSharedPrefs.getString(MOVIE_SORTING, MOVIE_BOOKMARKED);
 
+    }
+
+    @Override
+    public void onClick(Movie movie) {
+        Intent detailIntent = new Intent(this, DetailActivity.class);
+        detailIntent.putExtra(Movie.EXTRA_MOVIE, movie.toBundle());
+        startActivity(detailIntent);
     }
 
     @Override
@@ -201,17 +210,14 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
         /* Return true so that the menu is displayed in the Toolbar */
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         if (id == R.id.action_sorting_criteria) {
             if (mSortingDialog != null) {
                 mSortingDialog.show();
             }
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -224,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
             protected void onStartLoading() {
                 Log.d(TAG,"Start Loading");
                 super.onStartLoading();
-                if (actualCriterion.equals(getString(R.string.pref_bookmarked))){
+                if (actualCriterion.equals(MOVIE_BOOKMARKED)) {
                     //force refresh
                     mPostersAdapter.clear();
                     forceLoad();
@@ -250,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
                 }
                 int page = args.getInt("page");
                 NetworkUtils networker = new NetworkUtils();
-                if (!(actualCriterion.equals(getString(R.string.pref_bookmarked)))) {
+                if (!(actualCriterion.equals(MOVIE_BOOKMARKED))) {
                     URL request = networker.buildMoviesUrl(page, actualCriterion);
                     try {
                         String JSONResponse = networker.getResponseFromHttpUrl(request);
@@ -285,7 +291,6 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
             }
         };
     }
-
     @Override
     public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> movies) {
         Log.d(TAG,"Load finished");
@@ -295,15 +300,13 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
             Log.d(TAG,mPostersAdapter.getItemCount() + " items loaded");
             showPosters();
         } else {
-            if (actualCriterion.equals(getString(R.string.pref_bookmarked))){
+            if (actualCriterion.equals(MOVIE_BOOKMARKED)) {
                 showNoBookmarksMessage();
             }else {
                 showErrorMessage();
             }
         }
     }
-
-
     @Override
     public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
         Log.d(TAG,"Restarting loader");
@@ -323,7 +326,6 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
         }
         return result;
     }
-
     private ArrayList<Movie> fetchMoviesFromCursor(Cursor cursor){
         ArrayList<Movie> result = new ArrayList<>();
         Log.d(TAG,"Found" + cursor.getCount() + " bookmarks");

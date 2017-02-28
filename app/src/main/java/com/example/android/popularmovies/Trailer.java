@@ -1,5 +1,7 @@
 package com.example.android.popularmovies;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 class Trailer{
@@ -32,8 +34,12 @@ class Trailer{
         ArrayList<Trailer> res = new ArrayList<>();
 
         for (String element : elements) {
-            String[] item = element.split(",");
-            res.add(new Trailer(item[0], item[1]));
+            try {
+                String[] item = element.split(",");
+                res.add(new Trailer(item[0], item[1]));
+            } catch (IndexOutOfBoundsException e) {
+                Log.d("TRAILERS", e.toString());
+            }
         }
 
         return res;
