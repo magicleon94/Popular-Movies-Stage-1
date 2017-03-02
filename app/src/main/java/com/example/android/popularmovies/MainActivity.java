@@ -21,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.popularmovies.database.MovieContract;
 
@@ -107,14 +106,12 @@ public class MainActivity extends AppCompatActivity implements PostersAdapter.on
         mSortingDialog = initSortingDialog();
 
         initSharedPreferences();
-        Toast.makeText(this, "OnCreate, prefs fetched: " + actualCriterion, Toast.LENGTH_SHORT).show();
         if (savedInstanceState != null) {
             Log.d(TAG, "Restoring adapter");
             mPostersAdapter.restoreInstanceState(savedInstanceState);
             Log.d(TAG,mPostersAdapter.getItemCount() + " items recovered");
             mRecyclerView.scrollToPosition(savedInstanceState.getInt("SCROLL_POSITION"));
         } else {
-            Log.d(TAG,"Loading posters from onCreate");
             loadPosters();
         }
 

@@ -86,7 +86,6 @@ class PostersAdapter extends RecyclerView.Adapter<PostersAdapter.PosterViewHolde
             super(itemView);
             ButterKnife.bind(this, itemView);
             mContext = itemView.getContext();
-//            mImageView = (ImageView) itemView.findViewById(R.id.item_poster_image);
             itemView.setOnClickListener(this);
         }
 

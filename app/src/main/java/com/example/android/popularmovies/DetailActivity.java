@@ -141,8 +141,6 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     @OnClick(R.id.reviews_button)
     public void seeReviews(View v) {
         String reviewsString = Review.arrayToString(mReviews);
-        Log.d(TAG, "Passing: " + reviewsString);
-
         Intent reviewsIntent = new Intent(getApplicationContext(), ReviewsActivity.class);
         reviewsIntent.putExtra(getString(R.string.reviews_intent_extra), reviewsString);
         startActivity(reviewsIntent);
@@ -164,6 +162,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                     long id = mMovie.id;
 
                     if (!local) {
+                        Log.d(TAG, "Starting online query");
                         NetworkUtils networker = new NetworkUtils();
                         URL requestTrailersUrl = networker.buildTrailersUrl(id);
                         URL requestReviewsUrl = networker.buildReviewsUrl(id);
